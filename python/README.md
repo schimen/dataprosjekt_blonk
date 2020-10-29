@@ -1,1 +1,1 @@
-# dataprosjekt_blonk
+# kontrollpanel og server
