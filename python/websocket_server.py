@@ -36,6 +36,7 @@ class Connection:
         """
         self.messages[address].append(message)
         for connection in filter(lambda x: address in x.listen, self.connections):
+            print(f'send to: {connection.id}')
             await connection.websocket.send(f'melding;{address};{message}\n')
 
     async def listen_handler(self, address, action, *args):
@@ -44,9 +45,15 @@ class Connection:
         """
         if action.lower() == 'start':
             self.listen.add(address)
+            print(f'{self.id} listen to: {self.listen}')
 
-        if action.lower() == 'stop':
+        elif action.lower() == 'stop':
             self.listen.remove(address)
+            print(f'{self.id} listen to: {self.listen}')
+
+        else:
+            print(f'{action} is no action')
+            await self.websocket.send('feil;lytt\n')
 
         await self.websocket.send('ok\n')
 
