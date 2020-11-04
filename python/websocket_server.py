@@ -109,16 +109,14 @@ async def connection_handler(websocket, path):
     connection = Connection(websocket)
     id = connection.id
     print(f'new connection from {id}')
-    while True:
-        try:
-            message = await websocket.recv()
+    try:
+        async for message in websocket:
             await connection.handle_message(message)
 
-        except websockets.ConnectionClosed:
-            print(f"{id}: connection closed")
-            connection.remove()
-            del connection
-            break
+    except websockets.ConnectionClosed:
+        print(f"{id}: connection closed")
+        connection.remove()
+        del connection
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
