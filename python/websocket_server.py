@@ -1,6 +1,8 @@
+import socket
 import asyncio
 import websockets
 from string import ascii_uppercase
+
 
 class Connection:
     connections = []
@@ -118,8 +120,16 @@ async def connection_handler(websocket, path):
         connection.remove()
         del connection
 
+def get_ip():
+    hostname = socket.gethostname()
+    ip_address = socket.gethostbyname(hostname)
+    return ip_address
+
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
-    start_server = websockets.serve(connection_handler, host="localhost", port=8888)
+    host = get_ip()
+    port = 8000
+    start_server = websockets.serve(connection_handler, host=host, port=port)
+    print(f'hoting server at "{host}:{port}"')
     loop.run_until_complete(start_server)
     loop.run_forever()
