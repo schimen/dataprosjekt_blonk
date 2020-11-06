@@ -1,6 +1,8 @@
+import socket
 import asyncio
 import websockets
 from string import ascii_uppercase
+
 
 class Connection:
     connections = []
@@ -109,19 +111,34 @@ async def connection_handler(websocket, path):
     connection = Connection(websocket)
     id = connection.id
     print(f'new connection from {id}')
-    while True:
-        try:
-            message = await websocket.recv()
+    try:
+        async for message in websocket:
             await connection.handle_message(message)
 
-        except websockets.ConnectionClosed:
-            print(f"{id}: connection closed")
-            connection.remove()
-            del connection
-            break
+    except websockets.ConnectionClosed:
+        print(f"{id}: connection closed")
+        connection.remove()
+        del connection
+
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(('10.255.255.255', 1))
+        ip = s.getsockname()[0]
+
+    except Exception:
+        ip = '127.0.0.1'
+
+    finally:
+        s.close()
+
+    return ip
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
-    start_server = websockets.serve(connection_handler, host="localhost", port=8888)
+    host = get_ip()
+    port = 8000
+    start_server = websockets.serve(connection_handler, host=host, port=port)
+    print(f'hoting server at "{host}:{port}"')
     loop.run_until_complete(start_server)
     loop.run_forever()
