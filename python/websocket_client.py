@@ -5,6 +5,7 @@ class Client:
     async def connect(self, uri):
         self.queue = asyncio.Queue()
         async with websockets.connect(uri) as websocket:
+            print(f'connected to {uri}')
             self.websocket = websocket
             while True:
                 try:
@@ -19,9 +20,3 @@ class Client:
     async def send(self, command, *arguments):
         message = ';'.join((command, *arguments)) + r'\n'
         await self.websocket.send(message)
-
-if __name__ == '__main__':
-    uri = "ws://localhost:8888"
-    client = Client()
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(client.connect(uri))

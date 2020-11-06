@@ -23,7 +23,8 @@ class Connection:
                     'lytt': self.listen_handler,
                     'hent': self.get_last_handler,
                     'connect': self.connect_handler,
-                    'disconnect': self.disconnect_handler}
+                    'disconnect': self.disconnect_handler,
+                    'print': self.print_handler}
 
         if command not in commands:
             await self.websocket.send(f'feil;{command}\n')
@@ -63,22 +64,23 @@ class Connection:
         """
         get_last;address\n
         """
-        last_message = self.messages[address][-1]
+        try:
+            last_message = self.messages[address][-1]
+
+        except KeyError:
+            last_message = ''
+
         await self.websocket.send(f'melding;{address};{last_message}\n')
 
-    async def connect_handler(self, *args):
-        """
-        connect\n
-        """
-        await asyncio.sleep(0.5)
-        print(f'connecting {self.id}')
+    async def print_handler(self, *args):
+        print('connections:')
+        for connection in connectinos:
+            print(connection.id)
 
-    async def disconnect_handler(self, *args):
-        """
-        disconnect\n
-        """
-        await asyncio.sleep(0.5)
-        print(f'disconnecting {self.id}')
+        print()
+        print('messages:')
+        for address, message in messages.items():
+            print(f'{address}: {message}')
 
     @staticmethod
     def get_id_by_websocket(websocket):
@@ -104,7 +106,12 @@ def parse_message(message):
     stripped_message = message.strip(r'\n')
     parts = stripped_message.split(';')
     command = parts[0]
-    arguments = parts[1:]
+    try:
+        arguments = parts[1:]
+
+    except IndexError:
+        arguments = []
+
     return command, arguments
 
 async def connection_handler(websocket, path):
@@ -139,6 +146,6 @@ if __name__ == '__main__':
     host = get_ip()
     port = 8000
     start_server = websockets.serve(connection_handler, host=host, port=port)
-    print(f'hoting server at "{host}:{port}"')
+    print(f'hosting server at "{host}:{port}"')
     loop.run_until_complete(start_server)
     loop.run_forever()

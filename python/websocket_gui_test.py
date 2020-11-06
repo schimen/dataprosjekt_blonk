@@ -45,13 +45,19 @@ async def create_async_gui(client, interval=0.05):
         root.update()
         await asyncio.sleep(interval)
 
-async def main(loop):
-    uri = "ws://localhost:8888"
+async def main(loop, ip, port):
+    uri = f"ws://{ip}:{port}"
     client = Client()
     asyncio.create_task(client.connect(uri))
     asyncio.create_task(create_async_gui(client))
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main(loop))
-    loop.run_forever()
+    try:
+        ip = input('ip: ')
+        port = input('port: ')
+        loop = asyncio.get_event_loop()
+        loop.run_until_complete(main(loop, ip, port))
+        loop.run_forever()
+
+    except KeyboardInterrupt:
+        print('terminated from user')
