@@ -22,8 +22,6 @@ class Connection:
         commands = {'send': self.send_handler,
                     'lytt': self.listen_handler,
                     'hent': self.get_last_handler,
-                    'connect': self.connect_handler,
-                    'disconnect': self.disconnect_handler,
                     'print': self.print_handler}
 
         if command not in commands:
