@@ -157,5 +157,9 @@ if __name__ == '__main__':
     port = 8000
     start_server = websockets.serve(connection_handler, host=host, port=port)
     print(f'hosting server at "{host}:{port}"')
-    loop.run_until_complete(start_server)
-    loop.run_forever()
+    try:
+        loop.run_until_complete(start_server)
+        loop.run_forever()
+        
+    except KeyboardInterrupt:
+        print(f'terminated from user')
