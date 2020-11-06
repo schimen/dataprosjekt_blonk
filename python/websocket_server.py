@@ -35,7 +35,13 @@ class Connection:
         """
         send;adress;message\n
         """
-        self.messages[address].append(message)
+        try:
+            self.messages[address].append(message)
+
+        except KeyError:
+            self.messages[address] = []
+            self.messages[address].append(message)
+            
         for connection in filter(lambda x: address in x.listen, self.connections):
             print(f'send to: {connection.id}')
             await connection.websocket.send(f'melding;{address};{message}\n')
