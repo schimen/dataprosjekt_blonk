@@ -1,8 +1,12 @@
+"""
+todo:
+    fiks parse message (den kutter ut små n-er på slutten)
+"""
+
 import socket
 import asyncio
 import websockets
 from string import ascii_uppercase
-
 
 class Connection:
     connections = []
@@ -35,15 +39,16 @@ class Connection:
         """
         send;adress;message\n
         """
+        print(f'{self.id} sent {message} to {address}')
         try:
             self.messages[address].append(message)
 
         except KeyError:
             self.messages[address] = []
             self.messages[address].append(message)
-            
+
         for connection in filter(lambda x: address in x.listen, self.connections):
-            print(f'send to: {connection.id}')
+            print(f'server sent {message} to {connection.id}')
             await connection.websocket.send(f'melding;{address};{message}\n')
 
     async def listen_handler(self, address, action, *args):
@@ -107,6 +112,7 @@ def parse_message(message):
     """
     command;arguments\n
     """
+    #todo: kutter ut små n på slutten av meldinger. fiks dette!
     stripped_message = message.strip(r'\n')
     parts = stripped_message.split(';')
     command = parts[0]
