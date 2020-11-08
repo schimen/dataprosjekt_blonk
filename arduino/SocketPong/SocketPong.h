@@ -2,22 +2,20 @@
 #define SocketPong_h
 
 #include "Arduino.h"
-#include <WiFi.h>
 #include <ArduinoWebsockets.h>
-using namespace websockets;
+#include <WiFi.h>
 
 class SocketPong {
   public:
-    bool connect_to_wifi(String ssid_, String password_);
-    bool connect_to_server(String server);
-    void send(String message);
-    void ping(String message);
-    void poll();
-    bool is_connected_wifi();
-    bool is_connected_server();
-
+    SocketPong(String test);
+    bool connectWiFi(const char* ssid, const char* password);
+    void onMsg();
+    void onEvnt();
+    void connectServer(const char* websocketServer);
+    void send(String sendData);
+    void sendAndUpdate();    
   private:
-    WebsocketsClient client;
+    String test_;
 };
 
 #endif
