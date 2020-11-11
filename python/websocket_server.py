@@ -114,7 +114,7 @@ def parse_message(message):
 
     return command, arguments
 
-async def connection_handler(websocket):
+async def connection_handler(websocket, *args):
     """
     handles connection. called for each new connection
     """
