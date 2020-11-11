@@ -81,8 +81,6 @@ class Connection:
             print(f'{action} is no action')
             await self.websocket.send('feil;lytt\n')
 
-        await self.websocket.send('ok\n')
-
     async def get_last_handler(self, address):
         """
         hent;address\n
@@ -95,7 +93,6 @@ class Connection:
         """
         static method that returns an id consisting of ip_address and port
         """
-        print(websocket.remote_address)
         remote_host, remote_port = websocket.remote_address[:2]
         return f'{remote_host}:{remote_port}'
 
