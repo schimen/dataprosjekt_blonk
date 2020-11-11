@@ -41,3 +41,24 @@ class Database:
         document = await cursor.to_list(length=1)
         last_message = document[0]['message']
         return last_message
+
+    async def get_messages(self, max_length=100):
+        """
+        henter så mange meldinger du vil :)
+        """
+        cursor = self.db.messages.find({})
+        for document in await cursor.to_list(length=max_length):
+            yield document
+
+if __name__ == '__main__':
+    import asyncio
+    from pprint import pprint
+    
+    async def testing():
+        database = Database()
+        async for document in database.get_messages():
+            pprint(document)
+            
+    LOOP = asyncio.get_event_loop()
+    LOOP.run_until_complete(testing())
+        
