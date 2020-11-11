@@ -126,7 +126,7 @@ async def connection_handler(websocket, *args):
             await connection.handle_message(message)
 
     except websockets.ConnectionClosed:
-        print(f"{id}: connection closed")
+        print(f"{connection_id}: connection closed")
         connection.remove()
         del connection
 
