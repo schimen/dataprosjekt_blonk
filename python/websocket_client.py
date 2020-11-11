@@ -1,8 +1,20 @@
+"""
+bibliotek for websocket klient i prosjekt i faget IELET2001
+klienten kobler seg på vår egen skrevet server og bruker denne vår egen
+protokoll for kommandoer
+"""
+
 import asyncio
 import websockets
 
 class Client:
+    """
+    klient klasse
+    """
     async def connect(self, uri):
+        """
+        koble til sever og lagre nødvendig informasjon
+        """
         self.queue = asyncio.Queue()
         async with websockets.connect(uri) as websocket:
             print(f'connected to {uri}')
@@ -18,5 +30,8 @@ class Client:
                     break
 
     async def send(self, command, *arguments):
-        message = ';'.join((command, *arguments)) + r'\n'
+        """
+        formaterer melding i riktig protokoll.
+        """
+        message = ';'.join((command, *arguments)) + '\n'
         await self.websocket.send(message)
