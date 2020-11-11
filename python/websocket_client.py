@@ -11,27 +11,37 @@ class Client:
     """
     klient klasse
     """
+    def __init__(self, host, port, message_handler=print):
+        self.host = host
+        self.port = port
+        self.message_handler = message_handler
+
     async def connect(self, uri):
         """
         koble til sever og lagre nødvendig informasjon
         """
-        self.queue = asyncio.Queue()
         async with websockets.connect(uri) as websocket:
-            print(f'connected to {uri}')
             self.websocket = websocket
+            print(f'connected to {uri}')
             while True:
                 try:
                     response = await self.websocket.recv()
-                    print(response)
-                    #await self.queue.put(response)
+                    self.message_handler(response)
 
                 except websockets.ConnectionClosed:
                     print('connection closed')
                     break
 
-    async def send(self, command, *arguments):
+    def send_soon(self, *arguments):
+        asyncio.create_task(self.send(*arguments))
+
+    async def send(self, *arguments):
         """
         formaterer melding i riktig protokoll.
         """
-        message = ';'.join((command, *arguments)) + '\n'
+        message = ';'.join((*arguments,)) + '\n'
         await self.websocket.send(message)
+
+    async def start(self):
+        uri = f"ws://{self.host}:{self.port}"
+        asyncio.create_task(self.connect(uri))
