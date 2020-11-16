@@ -1,15 +1,16 @@
 #include <ArduinoWebsockets.h>
-#include <tiny_websockets/client.hpp>
 #include <WiFi.h>
 #include <WString.h>
 #include <string.h>
 #include <stdlib.h>
 #include <WebSocketClient.h>
+#include <tiny_websockets/client.hpp>
+#include <tiny_websockets/server.hpp>
+#include <iostream>
 
-const char* ssid = "Get-2G-D61A81"; //Enter SSID
-const char* password = "F7TDK4RTX3"; //Enter Password
+const char* ssid = "BadMusician"; //Enter SSID
+const char* password = "qwerty123"; //Enter Password
 const char* websockets_server = "ws://echo.websocket.org:80"; //server adress and port
-unsigned int port = 80;
 
 using namespace websockets;
 
@@ -30,7 +31,10 @@ void onEventsCallback(WebsocketsEvent event, String data) {
     }
 }
 
+WSString line;
 WebsocketsClient client;
+
+String x;
 
 void setup() {
     Serial.begin(115200);
@@ -58,13 +62,8 @@ void setup() {
       client.send("send;A1;Hei\n");      
     }else{
       Serial.println("no conneted");      
-    }
-    
-    // Send a message
-    
-
-    
-    
+    }    
+    // Send a message    
     // Send a ping
     client.ping();
     
@@ -72,19 +71,48 @@ void setup() {
 }
 
 void loop() {
-  delay(200);
+
+  
+  volatile bool done = false;
   auto msg = client.readBlocking();
   if(msg.isText()) {
     Serial.print("Got Text Message: ");
     Serial.print(msg.data());
   }
+  
   else if(msg.isPing()) {
     Serial.print("Got Ping with payload: ");
     Serial.print(msg.data());
   }
- 
-
-   
+  
+  client.onEvent([&done](WebsocketsClient& client, WebsocketsEvent event, String data) {
+      if(event == WebsocketsEvent::GotPong) {
+          x = data;
+          done = true;
+          Serial.println("GOT POOOOOOOOOOONG");
+          Serial.println(data);
+      }
+  });
+  line = "";
+  
+      
+  while(client.available()){
+    client.poll();
+    
+    //Serial.print("Enter input ");
+      
+    
+    
+    if(line != ""){
+      if(line == "exit");
+      
+    }
+    else{
+      client.poll();
+      
+    }
+  }
+  
 }
 
 
@@ -104,17 +132,6 @@ void logMessage(websockets::WebsocketsMessage& msg) {
     else if(msg.isLast()) Serial.print( "End");
   }
 } 
-
-
-  
-
-  
-
-
-
-  
-
-
 
   /*
   enum FragmentsPolicy{
