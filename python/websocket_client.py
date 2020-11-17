@@ -1,27 +1,47 @@
+"""
+bibliotek for websocket klient i prosjekt i faget IELET2001
+klienten kobler seg på vår egen skrevet server og bruker denne vår egen
+protokoll for kommandoer
+"""
+
 import asyncio
 import websockets
 
 class Client:
+    """
+    klient klasse
+    """
+    def __init__(self, host, port, message_handler=print):
+        self.host = host
+        self.port = port
+        self.message_handler = message_handler
+
     async def connect(self, uri):
-        self.queue = asyncio.Queue()
+        """
+        koble til sever og lagre nødvendig informasjon
+        """
         async with websockets.connect(uri) as websocket:
             self.websocket = websocket
+            print(f'connected to {uri}')
             while True:
                 try:
                     response = await self.websocket.recv()
-                    print(response)
-                    #await self.queue.put(response)
+                    self.message_handler(response)
 
                 except websockets.ConnectionClosed:
                     print('connection closed')
                     break
 
-    async def send(self, command, *arguments):
-        message = ';'.join((command, *arguments)) + r'\n'
+    def send_soon(self, *arguments):
+        asyncio.create_task(self.send(*arguments))
+
+    async def send(self, *arguments):
+        """
+        formaterer melding i riktig protokoll.
+        """
+        message = ';'.join((*arguments,)) + '\n'
         await self.websocket.send(message)
 
-if __name__ == '__main__':
-    uri = "ws://localhost:8888"
-    client = Client()
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(client.connect(uri))
+    async def start(self):
+        uri = f"ws://{self.host}:{self.port}"
+        asyncio.create_task(self.connect(uri))
