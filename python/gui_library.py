@@ -1,17 +1,17 @@
 import tkinter as tk
 import asyncio
 
-class GUI:
+class GUI(tk.Tk):
     """
     klasse for å gi høynivå kontroll på gui
     """
-    def __init__(self):
-        self.root = tk.Tk()
-        self.root.rowconfigure(0, weight=1)
-        self.root.columnconfigure(0, weight=1)
+    def __init__(self, *args, **kwargs):
+        tk.Tk.__init__(self, *args, **kwargs)
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
 
     def add_section(self,  content, **kwargs):
-        section = Section(self.root)
+        section = Section(self)
         section.load_widgets(content)
         section.grid(kwargs)
         return section
@@ -22,7 +22,7 @@ class GUI:
     async def async_loop(self, interval=0.05):
         while True:
             try:
-                self.root.update()
+                self.update()
                 await asyncio.sleep(interval)
 
             except KeyboardInterrupt:
