@@ -10,6 +10,10 @@
 	* Sindre
 	* Simen
 
+* Blink eksempel:
+	* Sindre
+	* Simen
+
 ## Rapport ansvar:
 * Bjørnar: 
 	* bakgrunn om ESP32 
