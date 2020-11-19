@@ -90,7 +90,7 @@ class Plot(tk.Frame):
         self.fig = plt.figure(figsize=figsize, dpi=dpi)
         self.ax = self.fig.add_subplot(1, 1, 1)
         self.ax.set_ylim(*ylim)
-        self.last_x = self.width
+        self.last_x = 0.1   #må være lav men ikke null
         self.ax.set_xlim((0, self.last_x))
 
         self.canvas = FigureCanvasTkAgg(self.fig, parent)
@@ -99,18 +99,15 @@ class Plot(tk.Frame):
     def add_value(self, name, value):
         x_values, y_values = self.lines[name]['values']
         y_values.append(value)
-        try:
-            new_x = x_values[-1] + 1
 
-        except IndexError:
-            new_x = 0
-
-        x_values.append(new_x)
+        x_values.append(self.last_x)
         if self.last_x < len(x_values):
             self.last_x = len(x_values)
 
-        if self.width < self.last_x:
-            self.ax.set_xlim((self.last_x-self.width), self.last_x)
+        if self.width > self.last_x:
+            self.ax.set_xlim(0, self.width)
+        else:
+            self.ax.set_xlim(self.last_x-self.width, self.last_x)
 
         color = self.lines[name]['color']
         style = self.lines[name]['style']
