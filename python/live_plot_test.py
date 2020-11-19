@@ -2,14 +2,14 @@ import asyncio
 from random import randint
 from libraries.gui_library import GUI
 
-async def update_plot(name):
+async def update_plot(name, pause):
     while True:
-        plot.add_value(name, randint(40,100))
-        await asyncio.sleep(randint(1, 100)/1000)
+        plot.add_value(name, randint(20,90))
+        await asyncio.sleep(randint(1, 100)/pause)
 
 async def main():
-    test_1 = asyncio.create_task(update_plot('test_1'))
-    test_2 = asyncio.create_task(update_plot('test_2'))
+    test_1 = asyncio.create_task(update_plot('test_1', 1000))
+    test_2 = asyncio.create_task(update_plot('test_2', 50))
     await asyncio.gather(test_1, test_2)
 
 section_content = ({'plot': {}, 'name': 'plot_test'},)
