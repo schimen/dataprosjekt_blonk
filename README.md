@@ -17,17 +17,17 @@
 ## Rapport ansvar:
 * Bjørnar: 
 	* bakgrunn om ESP32 
-	* bakgrunn websockets bibliotek på ESP32
-	* metode mikrokontroller (med rokas)
+	* innledning websockets bibliotek på ESP32 (under klient)
+	* metode mikrokontroller
 
 * Rokas: 
-	* problemstilling klient mikrokontroller
+	* innledning klient mikrokontroller
+	* innledning pong
 	* metode pong
-	* metode mikrokontroller (med bjørnar)
 
 * Ken:
 	* bakgrunn: GUI
-	* problemstilling GUI
+	* innledning GUI
 	* metode GUI
 
 * Sindre:
@@ -37,6 +37,8 @@
 	* metode egen protokoll
 
 * Simen
-	* innledning server
+	* innledning server og database
 	* bakgrunn serverside
 	* metode server
+	* innledning blink
+	* metode blink
