@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.ttk as ttk
 import asyncio
 
 class GUI(tk.Tk):
@@ -47,7 +48,8 @@ class Section(tk.Frame):
                                'scale': tk.Scale,
                                'entry': tk.Entry,
                                'label': tk.Label,
-                               'listbox': tk.Listbox}
+                               'listbox': tk.Listbox,
+                               'checkbutton': tk.Checkbutton}
 
             for key, preferences in widget.items():
                 if key in widget_handlers:

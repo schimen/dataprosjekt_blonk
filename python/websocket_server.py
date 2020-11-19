@@ -7,7 +7,7 @@ se https://github.com/schimen/dataprosjekt_blonk for mer info
 import socket
 import asyncio
 import websockets
-from database_control import Database
+from libraries.database_library import Database
 
 class Connection:
     """

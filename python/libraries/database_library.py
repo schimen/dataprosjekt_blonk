@@ -6,20 +6,22 @@ av mongodb
 
 from datetime import datetime
 import motor.motor_asyncio
+from pymongo import MongoClient
+
+#global uri for database:
+PASSWORD = 'blonk-admin'
+DBNAME = 'blonkdb'
+URI = f'mongodb+srv://blonkserver:{PASSWORD}@cluster0.etj0n.mongodb.net/{DBNAME}?retryWrites=true&w=majority'
 
 class Database:
     """
     database klasse
     """
-    password = 'blonk-admin'
-    dbname = 'blonkdb'
-    uri = f'mongodb+srv://blonkserver:{password}@cluster0.etj0n.mongodb.net/{dbname}?retryWrites=true&w=majority'
-
     def __init__(self):
         """
         lagre klient og db objekt
         """
-        self.client = motor.motor_asyncio.AsyncIOMotorClient(self.uri)
+        self.client = motor.motor_asyncio.AsyncIOMotorClient(URI)
         self.db = self.client.test
 
     async def save_message(self, address, message, author):
@@ -49,6 +51,16 @@ class Database:
         cursor = self.db.messages.find(query).sort('time', -1).limit(max_length)
         for document in await cursor.to_list(length=max_length):
             yield document
+
+def get_messages_sync(query={}, max_length=100):
+    #connect to database:
+    client = MongoClient(URI)
+    db = client.test
+    collection = db.messages
+    cursor = collection.find(query).sort('time', -1).limit(max_length)
+    for document in cursor:
+        yield document
+
 
 if __name__ == '__main__':
     import asyncio

@@ -1,4 +1,4 @@
-from gui_library import GUI
+from libraries.gui_library import GUI
 import asyncio
 
 def update_message():
@@ -12,7 +12,6 @@ section_content = ({'label': {'text': 'skriv navnet ditt'}},
                    {'entry': {}, 'name': 'text_entry'},
                    {'button': {'text': 'si hei', 'command': update_message}},
                    {'label': {}, 'name': 'text_output'})
-
 gui = GUI()
 section = gui.add_section(section_content)
 loop = asyncio.get_event_loop()

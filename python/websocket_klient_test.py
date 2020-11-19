@@ -1,7 +1,7 @@
 import asyncio
-from gui_library import GUI
-from websocket_client import Client
-from database_control import Database
+from libraries.gui_library import GUI
+from libraries.client_library import Client
+from libraries.database_library import Database
 
 def send_message():
     entry = server_section.callable_widgets['text_entry']
