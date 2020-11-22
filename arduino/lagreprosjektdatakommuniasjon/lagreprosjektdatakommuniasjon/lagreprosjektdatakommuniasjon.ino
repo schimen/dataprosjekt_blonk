@@ -8,8 +8,8 @@
 #include <tiny_websockets/server.hpp>
 #include <iostream>
 
-const char* ssid = "BadMusician"; //Enter SSID
-const char* password = "qwerty123"; //Enter Password
+const char* ssid = "Get-2G-D61A81"; //Enter SSID
+const char* password = "F7TDK4RTX3"; //Enter Password
 const char* websockets_server = "ws://echo.websocket.org:80"; //server adress and port
 
 using namespace websockets;
@@ -89,29 +89,19 @@ void loop() {
       if(event == WebsocketsEvent::GotPong) {
           x = data;
           done = true;
-          Serial.println("GOT POOOOOOOOOOONG");
+          Serial.println("lytt;B3;start\n");
           Serial.println(data);
       }
   });
-  line = "";
   
       
   while(client.available()){
     client.poll();
-    
-    //Serial.print("Enter input ");
-      
-    
-    
-    if(line != ""){
-      if(line == "exit");
-      
-    }
-    else{
-      client.poll();
-      
-    }
   }
+    
+    
+      
+   
   
 }
 
