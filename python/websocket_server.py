@@ -68,11 +68,9 @@ class Connection:
         address (str): address to send message to
         message (str): message to send
         """
-        print(f'{self.connection_id} sent {message} to {address}')
         asyncio.create_task(self.database.save_message(address, message, self.connection_id))
 
         for connection in filter(lambda x: address in x.listen, self.connections):
-            print(f'server sent {message} to {connection.connection_id}')
             await connection.websocket.send(f'melding;{address};{message}\n')
 
     async def listen_handler(self, address, action):
@@ -179,7 +177,8 @@ def main():
     loop = asyncio.get_event_loop()
     host = get_ip()
     port = 8000
-    start_server = websockets.serve(connection_handler, host=host, port=port)
+    start_server = websockets.serve(connection_handler, host=host, port=port,
+                                    max_queue=10)
     print(f'hosting websockets server at "{host}:{port}"')
     try:
         loop.run_until_complete(start_server)

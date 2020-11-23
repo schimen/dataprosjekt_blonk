@@ -2,9 +2,9 @@
 #include <ArduinoWebsockets.h>
 #include <WiFi.h>
 
-const char* ssid = "Get-2G-351461"; //Enter SSID
-const char* password = "NB8UJY7RAE"; //Enter Password
-const char* websockets_server_host = "192.168.0.142"; //Enter server adress
+const char* ssid = "PongGang"; //Enter SSID
+const char* password = "Pong1234"; //Enter Password
+const char* websockets_server_host = "192.168.137.174"; //Enter server adress
 const uint16_t websockets_server_port = 8000; // Enter server port
 
 String readIn = "";
@@ -87,12 +87,12 @@ void loop()
     {
         client.poll();
     }
-    delay(500);
+    delay(2000);
 }
 
 void temp()
 {
-  message = "send;Sindre;";
+  message = "send;temp;";
   Vo = analogRead(tempsensor);
   R2 = R1 * (4095.0 / (float)Vo - 1.0);
   logR2 = log(R2);

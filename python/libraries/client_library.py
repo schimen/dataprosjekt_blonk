@@ -16,7 +16,7 @@ class Client:
         self.port = port
         self.message_handler = message_handler
 
-    async def connect(self, uri):
+    async def connect(self, uri, max_queue=2):
         """
         koble til sever og lagre nødvendig informasjon
         """
@@ -45,3 +45,25 @@ class Client:
     async def start(self):
         uri = f"ws://{self.host}:{self.port}"
         asyncio.create_task(self.connect(uri))
+
+def parse_message(message):
+    """
+    Split message on ";" and strip message of "\n"
+
+    Parameters:
+    message (str): message to split
+
+    Returns:
+    str:command
+    list:arguments
+    """
+    stripped_message = message.strip('\n')
+    parts = stripped_message.split(';')
+    command = parts[0]
+    try:
+        arguments = parts[1:]
+
+    except IndexError:
+        arguments = []
+
+    return command, arguments

@@ -81,7 +81,7 @@ class Plot(tk.Frame):
         plotstyle='ggplot'
         figsize=(5,5)
         dpi=100
-        ylim=(0,100)
+        ylim=(0,4095)
 
         self.width=100
         self.lines = dict()

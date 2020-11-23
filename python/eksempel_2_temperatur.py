@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from libraries.database_library import get_messages_sync
 
 #last ned data fra databasen:
-messages =  get_messages_sync(query={'address': 'Sindre'}, max_length=10000)
+messages =  get_messages_sync(query={'address': 'temp'}, max_length=10000)
 
 #sett opp pandas dataframe:
 df = pd.DataFrame(list(messages))
@@ -29,7 +29,10 @@ df.dropna(inplace=True)
 #sett tid som index:
 df.set_index('time', inplace=True)
 
+#hent verdier fra dag:
+dag = df['23-11-2020']
+
 #lag et plot for å vise at dataene er der:
-df.plot()
+dag.plot()
 plt.title('Temperaturmålinger eksempel 1')
 plt.show()

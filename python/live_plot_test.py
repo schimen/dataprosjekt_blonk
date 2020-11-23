@@ -1,28 +1,39 @@
 import asyncio
 from random import randint
 from libraries.gui_library import GUI
+from libraries.client_library import Client, parse_message
 
-async def update_plot(name, pause):
-    while True:
-        plot.add_value(name, randint(20,90))
-        await asyncio.sleep(randint(1, 100)/pause)
+def send_lytt():
+    address = 'potVerdi'
+    client.send_soon('lytt', address, 'start')
 
-async def main():
-    test_1 = asyncio.create_task(update_plot('test_1', 1000))
-    test_2 = asyncio.create_task(update_plot('test_2', 50))
-    await asyncio.gather(test_1, test_2)
+def on_message(response):
+    command, arguments = parse_message(response)
+    string_value = arguments[1]
+    try:
+        value = int(string_value)
+        plot.add_value('pot', value)
 
-section_content = ({'plot': {}, 'name': 'plot_test'},)
-gui = GUI()
-section = gui.add_section(section_content)
-plot = section.callable_widgets['plot_test']
-plot.add_line('test_1', color='g', style=':')
-plot.add_line('test_2', color='b', style='-')
-loop = asyncio.get_event_loop()
-loop.run_until_complete(gui.start())
-loop.run_until_complete(main())
-try:
-    loop.run_forever()
+    except ValueError:
+        pass
 
-except KeyboardInterrupt:
-    print('terminated by user')
+if __name__ == '__main__':
+    #set up websocket client
+    host = input('host: ')
+    port = input('port: ')
+    client = Client(host, port, message_handler=on_message)
+
+    section_content = ({'plot': {}, 'name': 'plot_test'},
+                       {'button': {'text': 'lytt','command':send_lytt}})
+    gui = GUI()
+    section = gui.add_section(section_content)
+    plot = section.callable_widgets['plot_test']
+    plot.add_line('pot', color='g', style='-')
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(gui.start())
+    loop.run_until_complete(client.start())
+    try:
+        loop.run_forever()
+
+    except KeyboardInterrupt:
+        print('terminated by user')
