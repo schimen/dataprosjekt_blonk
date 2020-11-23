@@ -7,15 +7,16 @@
 
 class SocketPong {
   public:
-    SocketPong(String test);
+    SocketPong(String server);
     bool connectWiFi(const char* ssid, const char* password);
     void onMsg();
     void onEvnt();
-    void connectServer(const char* websocketServer);
+    void connectServer();
     void send(String sendData);
     void sendAndUpdate();    
+    int increaseCheck(int pin, int prevPot);
   private:
-    String test_;
+    String websocketServer_;
 };
 
 #endif
