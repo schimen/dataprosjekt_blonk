@@ -32,9 +32,9 @@
 
 * Sindre:
 	* bakgrunn protokoll
-	* innledning temperatur måler
-	* metode temperatur måler
-	* metode egen protokoll
+	* ~~innledning temperatur måler~~
+	* ~~metode temperatur måler~~
+	* ~~metode egen protokoll~~
 
 * Simen
 	* innledning server og database
