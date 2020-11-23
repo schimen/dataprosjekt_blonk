@@ -2,6 +2,8 @@
 server script for dataprosjekt i IELET2001.
 kjør server på raspbery pi og koble på med websockets.
 se https://github.com/schimen/dataprosjekt_blonk for mer info
+
+Author: Simen Løcka Eine
 """
 
 import socket
@@ -14,6 +16,7 @@ class Connection:
     connection class
     used for handling all action regarding connections and their messages
     """
+
     connections = []
     database = Database()
 
@@ -28,14 +31,17 @@ class Connection:
 
     def remove(self):
         """
-        removes connection from connection list
+        Remove connection from conncetions list
         """
         self.connections.remove(self)
 
     async def handle_message(self, message):
         """
-        handle each received message.
-        this function decodes the message and calls the appropriate handler
+        Handle a received message.
+        Parses message and calls appropriate function
+
+        Parameters:
+        message (str): message to proccess
         """
         command, arguments = parse_message(message)
         commands = {'send': self.send_handler,
@@ -56,7 +62,11 @@ class Connection:
 
     async def send_handler(self, address, message):
         """
-        send;adress;message\n
+        Handle "send" command
+
+        Parameters:
+        address (str): address to send message to
+        message (str): message to send
         """
         print(f'{self.connection_id} sent {message} to {address}')
         asyncio.create_task(self.database.save_message(address, message, self.connection_id))
@@ -67,7 +77,11 @@ class Connection:
 
     async def listen_handler(self, address, action):
         """
-        lytt;address;action\n
+        Handle "lytt" command
+
+        Parameters:
+        address (str): address to begin listening to
+        action (str): choice of action for listening (start/stop)
         """
         if action.lower() == 'start':
             self.listen.add(address)
@@ -83,7 +97,11 @@ class Connection:
 
     async def get_last_handler(self, address):
         """
-        hent;address\n
+        Get last message on database on specific address
+        and send it to connection
+
+        Parameters:
+        address (str): address to get the last message from
         """
         last_message = await self.database.get_last_message(address)
         await self.websocket.send(f'melding;{address};{last_message}\n')
@@ -91,14 +109,21 @@ class Connection:
     @staticmethod
     def get_id_by_websocket(websocket):
         """
-        static method that returns an id consisting of ip_address and port
+        Returns a combined string of ip address and port of connection
         """
         remote_host, remote_port = websocket.remote_address[:2]
         return f'{remote_host}:{remote_port}'
 
 def parse_message(message):
     """
-    command;arguments\n
+    Split message on ";" and strip message of "\n"
+
+    Parameters:
+    message (str): message to split
+
+    Returns:
+    str:command
+    list:arguments
     """
     stripped_message = message.strip('\n')
     parts = stripped_message.split(';')
@@ -113,7 +138,10 @@ def parse_message(message):
 
 async def connection_handler(websocket, *args):
     """
-    handles connection. called for each new connection
+    Handle opening, traffic and closing new connection
+
+    Parameters:
+    websocket (WebSocketClientProtocol): Class from websockets library
     """
     connection = Connection(websocket)
     connection_id = connection.connection_id
@@ -129,8 +157,7 @@ async def connection_handler(websocket, *args):
 
 def get_ip():
     """
-    returns the ip of the computer.
-    returns local ip if not connected to internet
+    Return computer IP address
     """
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
@@ -147,7 +174,7 @@ def get_ip():
 
 def main():
     """
-    main function, run all code here
+    Setup loop and run server forever
     """
     loop = asyncio.get_event_loop()
     host = get_ip()

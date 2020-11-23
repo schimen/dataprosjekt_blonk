@@ -2,9 +2,9 @@
 #include <ArduinoWebsockets.h>
 #include <WiFi.h>
 
-const char* ssid = "Get-2G-351461"; //Enter SSID
-const char* password = "NB8UJY7RAE"; //Enter Password
-const char* websockets_server_host = "192.168.0.142"; //Enter server adress
+const char* ssid = "PongGang"; //Enter SSID
+const char* password = "Pong1234"; //Enter Password
+const char* websockets_server_host = "192.168.137.174"; //Enter server adress
 const uint16_t websockets_server_port = 8000; // Enter server port
 
 String readIn = "";
@@ -12,8 +12,8 @@ boolean connection = false;
 
 const int ledpin = 2;
 
-String sourceMessageOn = "melding;SindreLedStatus;On\n";
-String sourceMessageOff = "melding;SindreLedStatus;Off\n";
+String sourceMessageOn = "melding;led;on\n";
+String sourceMessageOff = "melding;led;off\n";
 
 using namespace websockets;
 
@@ -80,7 +80,7 @@ void loop()
     }
     if(connection)
     {
-      client.send("hent;SindreLedStatus");
+      client.send("hent;led");
     }
     if(client.available()) 
     {
