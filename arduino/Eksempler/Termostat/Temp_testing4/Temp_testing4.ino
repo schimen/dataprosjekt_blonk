@@ -20,13 +20,13 @@ String message = "";
 
 using namespace websockets;
 
-void onEventsCallback(WebsocketsEvent event, String data) 
+void onEventsCallback(WebsocketsEvent event, String data)
   {
-    if(event == WebsocketsEvent::ConnectionOpened) 
+    if(event == WebsocketsEvent::ConnectionOpened)
       {
         Serial.println("Connnection Opened");
-      } 
-    else if(event == WebsocketsEvent::ConnectionClosed) 
+      }
+    else if(event == WebsocketsEvent::ConnectionClosed)
       {
         Serial.println("Connnection Closed");
         connection = false;
@@ -52,18 +52,18 @@ void setup() {
     Serial.println("Connected to Wifi, Connecting to server.");
     // try to connect to Websockets server
     bool connected = client.connect(websockets_server_host, websockets_server_port, "/");
-    if(connected) 
+    if(connected)
     {
       Serial.println("Connected!");
       connection = true;
-    } 
-    else 
+    }
+    else
     {
       Serial.println("Not Connected!");
     }
 
     client.onEvent(onEventsCallback);
-    
+
     // run callback when messages are received
     client.onMessage([&](WebsocketsMessage message)
     {
@@ -72,18 +72,18 @@ void setup() {
     });
 }
 
-void loop() 
+void loop()
 {
     while(!connection)
     {
       lostconnection();
-      delay(2000); 
+      delay(2000);
     }
     if(connection)
     {
       temp();
     }
-    if(client.available()) 
+    if(client.available())
     {
         client.poll();
     }
@@ -97,22 +97,22 @@ void temp()
   R2 = R1 * (4095.0 / (float)Vo - 1.0);
   logR2 = log(R2);
   T = (1.0 / (c1 + c2*logR2 + c3*logR2*logR2*logR2));
-  Tc = T - 273.15; 
+  Tc = T - 273.15;
 
   message += String(Tc);
-  
+
   Serial.print("Sending temperature: ");
   Serial.print(Tc);
   Serial.println(" C");
   client.send(message);
-  
+
 }
 
 void lostconnection()
 {
   Serial.println("Attempting to reconnect");
   bool connected = client.connect(websockets_server_host, websockets_server_port, "/");
-  if(connected) 
+  if(connected)
     {
       Serial.println("Connected!");
       connection = true;

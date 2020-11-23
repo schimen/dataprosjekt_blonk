@@ -6,8 +6,8 @@
 using namespace websockets;
 WebsocketsClient client;
 
-SocketPong::SocketPong(String test) {
-  test_ = test;
+SocketPong::SocketPong(String server) {
+  websocketServer_ = server;
 }
 
 
@@ -47,8 +47,8 @@ void SocketPong::onEvnt() {
   client.onEvent(onEventsCallback);
 }
 
-void SocketPong::connectServer(const char* websocketServer) {
-  client.connect(websocketServer);
+void SocketPong::connectServer() {
+  client.connect(websocketServer_);
 }
 
 void SocketPong::send(String sendData) {
@@ -65,5 +65,20 @@ void SocketPong::sendAndUpdate() {
   client.poll();
   if (Serial.available() > 0) {
     sendSerial();
+  }
+  if(!client.available()){
+    Serial.println("Disconnected from server retrying.");
+    client.connect(websocketServer_);
+  }
+}
+
+int SocketPong::increaseCheck(int pin, int prevPot){
+  int currentPot = analogRead(pin);
+  if(currentPot >= prevPot + 200 || currentPot <= prevPot - 200){
+    client.send("send;potVerdi;" + String(currentPot));
+    return currentPot;
+  }
+  else{
+    return prevPot;
   }
 }

@@ -31,10 +31,10 @@
 	* metode GUI
 
 * Sindre:
-	* bakgrunn protokoll
-	* innledning temperatur måler
-	* metode temperatur måler
-	* metode egen protokoll
+	* ~~bakgrunn protokoll~~
+	* ~~innledning temperatur måler~~
+	* ~~metode temperatur måler~~
+	* ~~metode egen protokoll~~
 
 * Simen
 	* innledning server og database

@@ -1,10 +1,12 @@
 #include "SocketPong.h"
 
-const char* ssid = "LAN Solo"; //Enter SSID
-const char* password = "Steroidegutta6"; //Enter Password
-const char* websockets_server = "ws://192.168.10.104:8000"; //server adress and port
+const char* ssid = "PongGang"; //Enter SSID
+const char* password = "Pong1234"; //Enter Password
 
-SocketPong socketPong("abc");
+const int potPin = 34; 
+int potValue = 0;
+
+SocketPong socketPong("ws://192.168.137.174:8000");
 
 void setup() {
   Serial.begin(115200);
@@ -21,9 +23,11 @@ void setup() {
   socketPong.onEvnt();
 
   // Connect to server
-  socketPong.connectServer(websockets_server);
+  socketPong.connectServer();
+  socketPong.send("lytt;potVerdi;START");
 }
 
 void loop() {
   socketPong.sendAndUpdate();
+  potValue = socketPong.increaseCheck(potPin, potValue);
 }
