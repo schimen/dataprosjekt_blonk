@@ -31,7 +31,7 @@
 	* metode GUI
 
 * Sindre:
-	* bakgrunn protokoll
+	* ~~bakgrunn protokoll~~
 	* ~~innledning temperatur måler~~
 	* ~~metode temperatur måler~~
 	* ~~metode egen protokoll~~
