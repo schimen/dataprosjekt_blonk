@@ -3,7 +3,6 @@
 
 #include "Arduino.h"
 #include <ArduinoWebsockets.h>
-#include <WiFi.h>
 
 class SocketPong {
   public:
@@ -13,8 +12,10 @@ class SocketPong {
     void onEvnt();
     void connectServer();
     void send(String sendData);
-    void sendAndUpdate();    
-    int increaseCheck(int pin, int prevPot);
+    void update();    
+    String playerCheck();
+    void screenInit();
+    void spill(String ply);
   private:
     String websocketServer_;
 };
