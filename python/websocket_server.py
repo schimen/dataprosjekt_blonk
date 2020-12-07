@@ -18,6 +18,7 @@ class Connection:
     """
 
     connections = []
+    unsaved = set()
     database = Database()
 
     def __init__(self, websocket):
@@ -46,7 +47,9 @@ class Connection:
         command, arguments = parse_message(message)
         commands = {'send': self.send_handler,
                     'lytt': self.listen_handler,
-                    'hent': self.get_last_handler}
+                    'hent': self.get_last_handler,
+                    'lagre': self.save_handler,
+                    'alias': self.alias_handler}
 
         if command not in commands:
             await self.websocket.send(f'feil;{command}\n')
@@ -68,9 +71,12 @@ class Connection:
         address (str): address to send message to
         message (str): message to send
         """
-        asyncio.create_task(self.database.save_message(address, message, self.connection_id))
+        if address not in self.unsaved:
+            args = (address, message, self.connection_id)
+            asyncio.create_task(self.database.save_message(*args))
 
-        for connection in filter(lambda x: address in x.listen, self.connections):
+        filter_handler = lambda x: address in x.listen
+        for connection in filter(filter_handler, self.connections):
             await connection.websocket.send(f'melding;{address};{message}\n')
 
     async def listen_handler(self, address, action):
@@ -83,11 +89,10 @@ class Connection:
         """
         if action.lower() == 'start':
             self.listen.add(address)
-            print(f'{self.connection_id} listen to: {self.listen}')
 
         elif action.lower() == 'stop':
-            self.listen.remove(address)
-            print(f'{self.connection_id} listen to: {self.listen}')
+            if address in self.listen:
+                self.listen.remove(address)
 
         else:
             print(f'{action} is no action')
@@ -103,6 +108,37 @@ class Connection:
         """
         last_message = await self.database.get_last_message(address)
         await self.websocket.send(f'melding;{address};{last_message}\n')
+
+    async def save_handler(self, address, action):
+        """
+        Handle "lagre" command, all addresses are saved by default.
+
+        Parameters:
+        address (str): address to begin listening to
+        action (str): choice of action for lagring (start/stop)
+        """
+        if action.lower() == 'start':
+            if address in self.unsaved:
+                self.unsaved.remove(address)
+                print(f'from now address: {address} will be saved')
+
+        elif action.lower() == 'stop':
+            self.unsaved.add(address)
+            print(f'from now address: {address} will not be saved')
+
+        else:
+            print(f'{action} is no action')
+            await self.websocket.send('feil;lytt\n')
+
+    async def alias_handler(self, alias):
+        """
+        Save alias for connection id on database
+
+        Parameters:
+        alias (str): name to represent connection id
+        """
+        args = (alias, self.connection_id)
+        asyncio.create_task(self.database.save_alias(*args))
 
     @staticmethod
     def get_id_by_websocket(websocket):
@@ -134,7 +170,7 @@ def parse_message(message):
 
     return command, arguments
 
-async def connection_handler(websocket, *args):
+async def connection_handler(websocket, path):
     """
     Handle opening, traffic and closing new connection
 
@@ -144,6 +180,9 @@ async def connection_handler(websocket, *args):
     connection = Connection(websocket)
     connection_id = connection.connection_id
     print(f'new connection from {connection_id}')
+    if len(path) > 0:
+        print(f'path: {path}')
+
     try:
         async for message in websocket:
             await connection.handle_message(message)
