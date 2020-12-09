@@ -3,7 +3,6 @@
 
 #include "Arduino.h"
 #include <ArduinoWebsockets.h>
-//#include <WiFi.h>//sjekk om du trenger denne her
 
 using namespace websockets;
 
