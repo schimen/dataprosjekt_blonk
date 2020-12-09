@@ -162,27 +162,29 @@ void midline_score() {
 }
 
 void lpaddle(int stringPotValue1) {
-  //remove remove previous paddle draw. This method only removes the white pixel delta, does not redraw entire paddle
-  tft.fillRect(lpaddle_x - 1, lpaddle_y, paddle_w + 1, paddle_w, BLACK);
-  tft.fillRect(lpaddle_x, lpaddle_y + paddle_h - 1, paddle_w, paddle_w, BLACK);
-
   //player controls for lpaddle
   lpaddle_y = map(stringPotValue1, 0 , 4095 , 1 , 240 - paddle_h);
-
-  //draws lpaddle
-  tft.fillRect(lpaddle_x, lpaddle_y, paddle_w, paddle_h, WHITE);
+  static int last_y_value = lpaddle_y;
+  if (lpaddle_y != last_y_value)  {
+    //remove remove previous paddle draw. This method only removes the white pixel delta, does not redraw entire paddle
+    tft.fillRect(lpaddle_x, last_y_value, paddle_w, paddle_h, BLACK);
+  
+    //draws lpaddle
+    tft.fillRect(lpaddle_x, lpaddle_y, paddle_w, paddle_h, WHITE);
+  }
 }
 
 void rpaddle(int stringPotValue2) {
-  //See lpaddle code
-  tft.fillRect(rpaddle_x - 1, rpaddle_y, paddle_w + 1, paddle_w, BLACK);
-  tft.fillRect(rpaddle_x, rpaddle_y + paddle_h - 1, paddle_w, paddle_w, BLACK);
-
   //player controls for rpaddle
   rpaddle_y = map(stringPotValue2, 0 , 4095 , 1 , 240 - paddle_h);
-
-  tft.fillRect(rpaddle_x, rpaddle_y, paddle_w, paddle_h, WHITE);
-
+  static int last_y_value = rpaddle_y;
+  if (rpaddle_y != last_y_value)  {
+    //remove remove previous paddle draw. This method only removes the white pixel delta, does not redraw entire paddle
+    tft.fillRect(rpaddle_x, last_y_value, paddle_w, paddle_h, BLACK);
+  
+    //draws lpaddle
+    tft.fillRect(rpaddle_x, rpaddle_y, paddle_w, paddle_h, WHITE);
+  }
 }
 
 void initgame() {
