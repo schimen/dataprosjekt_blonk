@@ -1,3 +1,2 @@
 # ESP32 websocket klient
-hei
-hei igjen
+her å det skrives en ordentlig readme

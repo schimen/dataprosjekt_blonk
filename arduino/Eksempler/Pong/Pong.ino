@@ -1,29 +1,29 @@
-#include "Arduino.h"
-#include "SocketPong.h"
-#include <ArduinoWebsockets.h>
-#include <WiFi.h>
+#include <Arduino.h>
+#include <SocketPong.h>
 #include <TFT_eSPI.h>
 #include <SPI.h>
 
-#define BLACK 0x0000
-#define WHITE 0xFFFF
-#define GREY  0x5AEB
-#define potPin 34
-#define buttonPin 22
+const char* ssid = "PongGang"; //Enter SSID
+const char* password = "Pong1234"; //Enter Password
+String player;
 
-using namespace websockets;
-WebsocketsClient client;
-TFT_eSPI tft = TFT_eSPI();
-
-//ST7789 dimensions
-int16_t h = 240;
-int16_t w = 240;
-
-int potValue_ = 0;
+int buttonPin = 0;
+int potPin = 34;
 
 //Potmeter 1-2 values
 int value1 = 0;
 int value2 = 0;
+
+int potValue_ = 0;
+
+#define BLACK 0x0000
+#define WHITE 0xFFFF
+#define GREY  0x5AEB
+
+//ST7789 dimensions
+const int16_t h = 240;
+const int16_t w = 240;
+
 
 //paddle dimensions and placements
 int16_t paddle_h = 40;
@@ -74,84 +74,24 @@ bool scoreswitch = true;
 
 unsigned long previousMillis = 0;
 
-
-SocketPong::SocketPong(String server) {
-  websocketServer_ = server;
-}
-
-
-bool SocketPong::connectWiFi(const char* ssid, const char* password) {
-  WiFi.begin(ssid, password);
-  for (int i = 0; i < 15 && WiFi.status() != WL_CONNECTED; i++) {
-    delay(1000);
-  }
-  if (WiFi.status() == WL_CONNECTED) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-void onMessageCallback(WebsocketsMessage message) {
-  String msg = message.data();
-  Serial.println(msg);
-  if (msg.substring(0, 8) == "melding;") {
-    if (msg.substring(8, 19) == "player1Pot;") {
-      value1 = msg.substring(19).toInt();
+void SocketPong::messageHandler(String message) {
+  Serial.println(message);
+  if (message.substring(0, 8) == "melding;") {
+    if (message.substring(8, 19) == "player1Pot;") {
+      value1 = message.substring(19).toInt();
       Serial.println(value1);
     }
-    else if (msg.substring(8, 19) == "player2Pot;") {
-      value2 = msg.substring(19).toInt();
+    else if (message.substring(8, 19) == "player2Pot;") {
+      value2 = message.substring(19).toInt();
       Serial.println(value2);
     }
   }
-
 }
 
-void SocketPong::onMsg() {
-  client.onMessage(onMessageCallback);
-}
+void SocketPong::eventHandler(String event, String data){};
 
-void onEventsCallback(WebsocketsEvent event, String data) {
-  if (event == WebsocketsEvent::ConnectionOpened) {
-    Serial.println("Connnected to Server");
-  } else if (event == WebsocketsEvent::ConnectionClosed) {
-    Serial.println("Disconnected from Server");
-  } else if (event == WebsocketsEvent::GotPong) {
-    Serial.println("Got a Pong!");
-  }
-}
-
-void SocketPong::onEvnt() {
-  client.onEvent(onEventsCallback);
-}
-
-void SocketPong::connectServer() {
-  client.connect(websocketServer_);
-}
-
-void SocketPong::send(String sendData) {
-  client.send(sendData);
-}
-
-void sendSerial() {
-  String serialData;
-  serialData = Serial.readString();
-  client.send(serialData);
-}
-
-void SocketPong::update() {
-  client.poll();
-  if (Serial.available() > 0) {
-    sendSerial();
-  }
-  if (!client.available()) {
-    Serial.println("Disconnected from server retrying.");
-    client.connect(websocketServer_);
-  }
-}
-
+SocketPong socketPong("ws://192.168.137.244:8000");
+TFT_eSPI tft = TFT_eSPI();
 
 void score() {
   //stops ball from spamming score if out of bounds
@@ -267,8 +207,8 @@ bool increaseCheck() {
   }
 }
 
-String SocketPong::playerCheck() {
-  int potValue = 0;
+String playerCheck() {
+  static int potValue;
   potValue = analogRead(potPin);
   pinMode(buttonPin, INPUT);
   delay(500);
@@ -276,8 +216,8 @@ String SocketPong::playerCheck() {
     potValue = analogRead(potPin);
     if (potValue == 0) {
       if (!digitalRead(buttonPin)) {
-        client.send("lytt;player1Pot;START");
-        client.send("lytt;player2Pot;START");
+        socketPong.send("lytt;player1Pot;START");
+        socketPong.send("lytt;player2Pot;START");
         return "screen";
       }
     }
@@ -302,7 +242,7 @@ String SocketPong::playerCheck() {
   }
 }
 
-void SocketPong::spill(String ply) {
+void spillPong(String ply) {
   if (ply == "player1Pot" || ply == "player2Pot") {
     if (increaseCheck()) {
       String msgValue = "send;";
@@ -310,7 +250,7 @@ void SocketPong::spill(String ply) {
       msgValue +=  ";";
       msgValue += String(potValue_);
       Serial.println(msgValue);
-      client.send(msgValue);
+      socketPong.send(msgValue);
     }
   }
   else if (ply == "screen") {
@@ -324,11 +264,38 @@ void SocketPong::spill(String ply) {
   }
 }
 
-void SocketPong::screenInit() {
+void screenInit() {
   tft.init();
   tft.setRotation(1);
   tft.fillScreen(BLACK);
   initgame();
   tft.setTextSize (2);
   tft.setTextColor(WHITE, BLACK);
+}
+
+void setup() {
+  Serial.begin(115200);
+  // Connect to wifi
+  while (!socketPong.connectWiFi(ssid, password)) {
+    Serial.println("WiFi connection failed, retrying...");
+    delay(1000);
+  }
+  Serial.println("Connected to WiFi");
+
+  // Setup Callbacks
+  socketPong.onMsg();
+  socketPong.onEvnt();
+
+  // Connect to server
+  socketPong.connectServer();
+  player = playerCheck();
+  Serial.println(player);
+  if(player == "screen"){
+    screenInit();
+  }
+}
+
+void loop() {
+  socketPong.update();
+  spillPong(player);
 }
