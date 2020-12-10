@@ -61,9 +61,6 @@ void SocketPong::sendSerial() {
 
 void SocketPong::update() {
   client.poll();
-  if (Serial.available() > 0) {
-    sendSerial();
-  }
   if (!client.available()) {
     Serial.println("Disconnected from server retrying.");
     client.connect(websocketServer_);

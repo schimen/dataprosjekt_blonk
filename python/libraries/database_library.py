@@ -100,7 +100,8 @@ class Database:
                 else:
                     stop_time = datetime.utcnow()
 
-            query = {'author': author, 'time': {'$gte': start_time}, 'time': {'$lt': stop_time}}
+            query = {'author': author,
+                     'time': {'$gte': start_time}, 'time': {'$lt': stop_time}}
             async for document in self.get_messages(query=query):
                 yield document
 

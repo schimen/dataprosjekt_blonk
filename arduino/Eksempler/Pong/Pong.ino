@@ -3,11 +3,11 @@
 #include <TFT_eSPI.h>
 #include <SPI.h>
 
-const char* ssid = "PongGang"; //Enter SSID
-const char* password = "Pong1234"; //Enter Password
+const char* ssid = "yoschimin"; //Enter SSID
+const char* password = "simensimen123"; //Enter Password
 String player;
 
-int buttonPin = 0;
+int buttonPin = 22;
 int potPin = 34;
 
 //Potmeter 1-2 values
@@ -43,10 +43,10 @@ int16_t lpaddle_ball_t = w - w / 4;
 int16_t rpaddle_ball_t = w / 4;
 
 //ball placement on grid
-int16_t ball_x = 2;
-int16_t ball_y = 2;
-int16_t oldball_x = 2;
-int16_t oldball_y = 2;
+int16_t ball_x = w/2;
+int16_t ball_y = h/2;
+int16_t oldball_x = w/2;
+int16_t oldball_y = h/2;
 
 //ball directions in (x,y)
 int16_t ball_dx = 1;
@@ -55,6 +55,10 @@ int16_t ball_dy = 1;
 //ball placements
 int16_t ball_w = 6;
 int16_t ball_h = 6;
+
+const int ball_step = 1;
+int16_t max_ball_speed = 15;
+int16_t ball_speed = max_ball_speed;
 
 //midline
 int16_t dashline_h = 4;
@@ -75,11 +79,9 @@ bool scoreswitch = true;
 unsigned long previousMillis = 0;
 
 void SocketPong::messageHandler(String message) {
-  Serial.println(message);
   if (message.substring(0, 8) == "melding;") {
     if (message.substring(8, 19) == "player1Pot;") {
       value1 = message.substring(19).toInt();
-      Serial.println(value1);
     }
     else if (message.substring(8, 19) == "player2Pot;") {
       value2 = message.substring(19).toInt();
@@ -90,18 +92,20 @@ void SocketPong::messageHandler(String message) {
 
 void SocketPong::eventHandler(String event, String data){};
 
-SocketPong socketPong("ws://192.168.137.244:8000");
+SocketPong socketPong("ws://192.168.43.76:8000");
 TFT_eSPI tft = TFT_eSPI();
 
 void score() {
   //stops ball from spamming score if out of bounds
-  if (ball_x > 240 && scoreswitch) {
+  if (ball_x > w && scoreswitch) {
     lscore++;
     scoreswitch = false;
+    initGame();
   }
   if (ball_x < 0 && scoreswitch) {
     rscore++;
     scoreswitch = false;
+    initGame();
   }
 
   //MAKE scoreswitch TRUE ON BUTTON PRESS TO RESET GAME, TO ENABLE POINT GAIN ON NEW ROUND
@@ -114,6 +118,20 @@ void score() {
   tft.drawString (rscoretext, w - 50, 20, 2);
 }
 
+int new_ball_speed()  {
+  static int min_speed = 1;
+  static int speed_change = 2;
+  if (ball_speed - speed_change >= min_speed) {
+    return ball_speed - speed_change;
+  }
+  else if (ball_speed > min_speed)  {
+    return min_speed;
+  }
+  else  {
+    return ball_speed;
+  }
+}
+
 void ball() {
 
   //ball_dx is the direction and change for the ball each frame, same with ball_dy
@@ -123,10 +141,14 @@ void ball() {
   //changes direction of ball on paddle hit
   if (ball_dx == -1 && ball_x == paddle_w && ball_y + ball_h >= lpaddle_y && ball_y <= lpaddle_y + paddle_h) {
     ball_dx = ball_dx * -1;
+    ball_dy = random_direction_y();
+    ball_speed = new_ball_speed();
   }
 
   else if (ball_dx == 1 && ball_x + ball_w == w - paddle_w && ball_y + ball_h >= rpaddle_y && ball_y <= rpaddle_y + paddle_h) {
     ball_dx = ball_dx * -1;
+    ball_dy = random_direction_y();
+    ball_speed = new_ball_speed();
   }
 
   // Keep ball in bounds
@@ -136,11 +158,16 @@ void ball() {
   }
 
   //oldball and ball functions aliases ball position for less jitter
-  //tft.fillRect(oldball_x, oldball_y, ball_w, ball_h, BLACK);
-  tft.drawRect(oldball_x, oldball_y, ball_w, ball_h, BLACK); // Less TFT refresh aliasing than line above for large balls
+  if (ball_dy > 1 || ball_dy < -1)  {
+    tft.fillRect(oldball_x, oldball_y, ball_w, ball_h, BLACK); 
+  }
+  else  {
+    tft.drawRect(oldball_x, oldball_y, ball_w, ball_h, BLACK); // Less TFT refresh aliasing than line above for large balls
+  }
   tft.fillRect(   ball_x,    ball_y, ball_w, ball_h, WHITE);
   oldball_x = ball_x;
   oldball_y = ball_y;
+  previousMillis = millis();
 }
 
 void midline_score() {
@@ -166,8 +193,9 @@ void lpaddle(int stringPotValue1) {
   lpaddle_y = map(stringPotValue1, 0 , 4095 , 1 , 240 - paddle_h);
   static int last_y_value = lpaddle_y;
   if (lpaddle_y != last_y_value)  {
-    //remove remove previous paddle draw. This method only removes the white pixel delta, does not redraw entire paddle
+    //remove remove previous paddle draw
     tft.fillRect(lpaddle_x, last_y_value, paddle_w, paddle_h, BLACK);
+    last_y_value = lpaddle_y;
   
     //draws lpaddle
     tft.fillRect(lpaddle_x, lpaddle_y, paddle_w, paddle_h, WHITE);
@@ -179,28 +207,51 @@ void rpaddle(int stringPotValue2) {
   rpaddle_y = map(stringPotValue2, 0 , 4095 , 1 , 240 - paddle_h);
   static int last_y_value = rpaddle_y;
   if (rpaddle_y != last_y_value)  {
-    //remove remove previous paddle draw. This method only removes the white pixel delta, does not redraw entire paddle
+    //remove remove previous paddle draw
     tft.fillRect(rpaddle_x, last_y_value, paddle_w, paddle_h, BLACK);
+    last_y_value = rpaddle_y;
   
     //draws lpaddle
     tft.fillRect(rpaddle_x, rpaddle_y, paddle_w, paddle_h, WHITE);
   }
 }
 
-void initgame() {
+int random_direction_x() {
+  int random_direction_variable = random(-1, 1);
+  if (random_direction_variable >= 0)  {
+    random_direction_variable = 1;
+  }
+  else  {
+    random_direction_variable = -1;
+  }
+  return random_direction_variable;
+}
+
+int random_direction_y() {
+  return random(-2, 2);
+}
+
+void initGame() {
+  
   //sets paddle to potmeter value position on y plane
   lpaddle_y = map(value1, 0, 4095, 0 , 240 - paddle_h);
   rpaddle_y = map(value2, 0, 4095, 0 , 240 - paddle_h);
 
   // ball is placed on the center of the left paddle (switch to right player after a point if you care)
-  ball_y = lpaddle_y + (paddle_h / 2);
+  ball_y = h / 2 ;
+  ball_x = w / 2;
+  ball_dx = random_direction_x();
+  ball_dy = random_direction_y();
+  ball_speed = max_ball_speed;
 
   midline_score();
+  scoreswitch = true;
+  screenReset();
 }
 
 bool increaseCheck() {
   int currentPot = analogRead(potPin);
-  if (currentPot >= potValue_ + 200 || currentPot <= potValue_ - 200) {
+  if (currentPot >= potValue_ + 50 || currentPot <= potValue_ - 50) {
     potValue_ = currentPot;
     return true;
   }
@@ -217,26 +268,28 @@ String playerCheck() {
   while (true) {
     potValue = analogRead(potPin);
     if (potValue == 0) {
-      if (!digitalRead(buttonPin)) {
+      if (!digitalRead(buttonPin)) {  //hvis det er skjermen som starter
         socketPong.send("lytt;player1Pot;START");
         socketPong.send("lytt;player2Pot;START");
         return "screen";
       }
     }
-    else if (potValue <= 1000 && potValue != 0) {
+    else if (potValue <= 1000 && potValue != 0) { //hvis det er spiller 1 som starter
       previousMillis = millis();
       while (potValue <= 1000 && potValue != 0) {
         potValue = analogRead(potPin);
         if (millis() - previousMillis >= 5000) {
+          socketPong.send("lagre;player1Pot;STOP");
           return "player1Pot";
         }
       }
     }
-    else if (potValue >= 3900) {
+    else if (potValue >= 3900) {  //hvis det er spiller 2 som starter
       previousMillis = millis();
       while (potValue >= 3900) {
         potValue = analogRead(potPin);
         if (millis() - previousMillis >= 5000) {
+          socketPong.send("lagre;player2Pot;STOP");
           return "player2Pot";
         }
       }
@@ -251,16 +304,20 @@ void spillPong(String ply) {
       msgValue +=  ply;
       msgValue +=  ";";
       msgValue += String(potValue_);
-      Serial.println(msgValue);
       socketPong.send(msgValue);
     }
   }
   else if (ply == "screen") {
+    if (!digitalRead(buttonPin)) {  //hvis det er skjermen som starter
+        lscore = 0;
+        rscore = 0;
+        initGame();
+      }
     lpaddle(value1);
     rpaddle(value2);
     midline_score();
     score();
-    if (millis() - previousMillis >= 50) {
+    if (millis() - previousMillis >= ball_speed) {
       ball();
     }
   }
@@ -270,9 +327,19 @@ void screenInit() {
   tft.init();
   tft.setRotation(1);
   tft.fillScreen(BLACK);
-  initgame();
+  initGame();
   tft.setTextSize (2);
   tft.setTextColor(WHITE, BLACK);
+
+  //draw court:
+  tft.fillRect(lpaddle_x, lpaddle_y, paddle_w, paddle_h, WHITE);
+  tft.fillRect(rpaddle_x, rpaddle_y, paddle_w, paddle_h, WHITE);
+}
+
+void screenReset()  {
+  tft.fillScreen(BLACK);
+  tft.fillRect(lpaddle_x, lpaddle_y, paddle_w, paddle_h, WHITE);
+  tft.fillRect(rpaddle_x, rpaddle_y, paddle_w, paddle_h, WHITE);
 }
 
 void setup() {
@@ -283,7 +350,6 @@ void setup() {
     delay(1000);
   }
   Serial.println("Connected to WiFi");
-
   // Setup Callbacks
   socketPong.onMsg();
   socketPong.onEvnt();
