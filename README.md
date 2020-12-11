@@ -1,16 +1,16 @@
 # dataprosjekt_blonk
 
 ## Todo:
-* Pong eksempel: 
+* ~~Pong eksempel~~: 
 	* Rokas
 	* Bjørnar
 	* Ken
 
-* Temperatur eksempel: 
+* ~~Temperatur eksempel~~: 
 	* Sindre
 	* Simen
 
-* Blink eksempel:
+* ~~Blink eksempel~~:
 	* Sindre
 	* Simen
 
