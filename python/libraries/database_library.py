@@ -22,7 +22,7 @@ class Database:
         lagre klient og db objekt
         """
         self.client = motor.motor_asyncio.AsyncIOMotorClient(URI)
-        self.db = self.client.test
+        self.db = self.client.socketPong
 
     async def save_alias(self, alias, author):
         """

@@ -1,124 +1,43 @@
+#include <SocketPong.h>
 
-#include <ArduinoWebsockets.h>
-#include <WiFi.h>
+const char* ssid = "Get-2G-D61211"; //Enter SSID
+const char* password = "YYEJ47GN8U"; //Enter Password
 
-const char* ssid = "PongGang"; //Enter SSID
-const char* password = "Pong1234"; //Enter Password
-const char* websockets_server_host = "192.168.137.174"; //Enter server adress
-const uint16_t websockets_server_port = 8000; // Enter server port
-
-String readIn = "";
-boolean connection = false;
-
+const int interval = 5000;
 const int tempsensor = 34;
-int Vo;
-float R1 = 10000;
-float logR2, R2, T, Tc;
-float c1 = 1.009249522e-03, c2 = 2.378405444e-04, c3 = 2.019202697e-07;
+int temperatur;
 
-String message = "";
+SocketPong socketPong("ws://192.168.0.109:8000");
 
-using namespace websockets;
+void sendTemp()
+{
+  String message = "send;temp;";
+  float in_min = 0; float in_max = 4096; float out_min = -40; float out_max = 125;
+  int x = analogRead(tempsensor);
+  temperatur = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  message += String(temperatur);
+  socketPong.send(message);
+  Serial.println(message);
+}
 
-void onEventsCallback(WebsocketsEvent event, String data)
-  {
-    if(event == WebsocketsEvent::ConnectionOpened)
-      {
-        Serial.println("Connnection Opened");
-      }
-    else if(event == WebsocketsEvent::ConnectionClosed)
-      {
-        Serial.println("Connnection Closed");
-        connection = false;
-      }
-  }
-
-WebsocketsClient client;
 void setup() {
-    Serial.begin(115200);
-    Serial.println();
-    // Connect to wifi
-    Serial.println("Connecting to WiFi");
-    WiFi.begin(ssid, password);
-
-    // Wait some time to connect to wifi
-    while (WiFi.status() != WL_CONNECTED)
-    {
-      delay(500);
-      Serial.print(".");
-    }
-    Serial.println();
-
-    Serial.println("Connected to Wifi, Connecting to server.");
-    // try to connect to Websockets server
-    bool connected = client.connect(websockets_server_host, websockets_server_port, "/");
-    if(connected)
-    {
-      Serial.println("Connected!");
-      connection = true;
-    }
-    else
-    {
-      Serial.println("Not Connected!");
-    }
-
-    client.onEvent(onEventsCallback);
-
-    // run callback when messages are received
-    client.onMessage([&](WebsocketsMessage message)
-    {
-        Serial.print("Got Message: ");
-        Serial.println(message.data());
-    });
+  Serial.begin(115200);
+    
+  while (!socketPong.connectWiFi(ssid, password)) {
+    Serial.println("WiFi connection failed, retrying...");
+    delay(1000);
+  }
+  Serial.println("Connected to WiFi");
+  
+  socketPong.connectServer();
 }
 
 void loop()
 {
-    while(!connection)
-    {
-      lostconnection();
-      delay(2000);
-    }
-    if(connection)
-    {
-      temp();
-    }
-    if(client.available())
-    {
-        client.poll();
-    }
-    delay(2000);
-}
-
-void temp()
-{
-  message = "send;temp;";
-  Vo = analogRead(tempsensor);
-  R2 = R1 * (4095.0 / (float)Vo - 1.0);
-  logR2 = log(R2);
-  T = (1.0 / (c1 + c2*logR2 + c3*logR2*logR2*logR2));
-  Tc = T - 273.15;
-
-  message += String(Tc);
-
-  Serial.print("Sending temperature: ");
-  Serial.print(Tc);
-  Serial.println(" C");
-  client.send(message);
-
-}
-
-void lostconnection()
-{
-  Serial.println("Attempting to reconnect");
-  bool connected = client.connect(websockets_server_host, websockets_server_port, "/");
-  if(connected)
-    {
-      Serial.println("Connected!");
-      connection = true;
-    }
-  else if (!connected)
-  {
-    Serial.println("Failed");
+  static int previousMillis = millis();
+  socketPong.update();
+  if (millis() - previousMillis > interval) {
+    sendTemp();
+    previousMillis = millis();
   }
 }
