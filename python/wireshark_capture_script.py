@@ -1,3 +1,9 @@
+"""
+Dette er et python-script som sender tre meldinger til websockets-serveren.
+Formålet med dette scriptet er å kunne analysere websockets-kommunikasjonen
+enkelt fra begge sider. 
+"""
+
 import asyncio
 import websockets
 from libraries.client_library import Client

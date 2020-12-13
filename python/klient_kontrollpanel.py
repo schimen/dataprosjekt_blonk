@@ -1,3 +1,10 @@
+"""
+Dette er et enkelt kontrollpanel som kan brukes til å sende meldinger
+til serveren og se de siste mottatte meldingene.
+Dette kontrollpanalet har blitt brukt for å sjekke at kommandoene
+på serveren fungerer som de skal.
+"""
+
 import asyncio
 from libraries.gui_library import GUI
 from libraries.client_library import Client

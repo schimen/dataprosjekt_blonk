@@ -2,6 +2,8 @@
 kontroll av database i prosjekt i IELET2001.
 scriptet inneholder funksjoner for å kontrollere en mongodb database, hostet
 av mongodb
+
+Author: Simen Løcka Eine
 """
 
 from datetime import datetime

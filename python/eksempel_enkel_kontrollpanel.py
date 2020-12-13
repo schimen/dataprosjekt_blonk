@@ -1,3 +1,8 @@
+"""
+Dette er en enkel demonstrasjon av kontrollpanel-biblioteket.
+Dette eksempelet viser kun frem GUI, ikke nettverkskommunikasjon.
+"""
+
 from libraries.gui_library import GUI
 import asyncio
 
