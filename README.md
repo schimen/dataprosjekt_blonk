@@ -21,9 +21,9 @@
 	* metode mikrokontroller
 
 * Rokas: 
-	* innledning klient mikrokontroller
-	* innledning pong
-	* metode pong
+	* ~~innledning klient mikrokontroller~~
+	* ~~innledning pong~~
+	* ~~metode pong~~
 
 * Ken:
 	* bakgrunn: GUI
