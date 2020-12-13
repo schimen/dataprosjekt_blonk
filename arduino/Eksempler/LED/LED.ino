@@ -28,7 +28,7 @@ void SocketPong::eventHandler(String event, String data)  {
   Serial.println(event);
 }
 
-SocketPong socketPong("ws://192.168.137.174:8000");
+SocketPong socketPong("ws://192.168.137.95:8000");
 
 void setup() {
   pinMode(ledpin, OUTPUT);
