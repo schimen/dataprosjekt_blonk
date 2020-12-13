@@ -1,4 +1,18 @@
-# dataprosjekt_blonk
+# idIOT
+
+IOT is the F U T U R E
+![](Dokumentasjon/Bilder/idIOT-logo.png)
+
+## Gruppe 23 dataprosjekt IELET2001 høst 2020
+* Gruppemedlemmer:
+	* Rokas the gamer
+	* Ken the dog
+	* Schimen the hacker
+	* Sindre the memestar
+	* Bjørnar the wise
+
+
+
 
 ## Todo:
 * ~~Pong eksempel~~: 
