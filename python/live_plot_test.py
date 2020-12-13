@@ -4,10 +4,12 @@ from libraries.gui_library import GUI
 from libraries.client_library import Client, parse_message
 
 def send_lytt():
-    address = 'potVerdi'
+    print('sender lytt')
+    address = 'potVal'
     client.send_soon('lytt', address, 'start')
 
 def on_message(response):
+    print(response)
     command, arguments = parse_message(response)
     string_value = arguments[1]
     try:
@@ -22,6 +24,7 @@ if __name__ == '__main__':
     host = input('host: ')
     port = input('port: ')
     client = Client(host, port, message_handler=on_message)
+    client
 
     section_content = ({'plot': {}, 'name': 'plot_test'},
                        {'button': {'text': 'lytt','command':send_lytt}})

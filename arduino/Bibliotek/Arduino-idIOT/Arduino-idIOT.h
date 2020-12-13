@@ -1,14 +1,14 @@
-#ifndef SocketPong_h
-#define SocketPong_h
+#ifndef idIOT_h
+#define idIOT_h
 
 #include "Arduino.h"
 #include <ArduinoWebsockets.h>
 
 using namespace websockets;
 
-class SocketPong {
+class idIOT {
   public:
-    SocketPong(String server);
+    idIOT(String server);
     bool connectWiFi(const char* ssid, const char* password, int pause = 1000);
     static void messageHandler(String message);
     static void eventHandler(String event, String data);

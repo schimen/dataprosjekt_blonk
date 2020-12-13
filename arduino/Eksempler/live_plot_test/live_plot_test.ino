@@ -3,20 +3,16 @@
 const char* ssid = "PongGang"; //Enter SSID
 const char* password = "Pong1234"; //Enter Password
 
-const int interval = 1000;
-const int tempsensor = 34;
-int temperatur;
+const int interval = 500;
+const int potpin = 34;
 
 idIOT connection("ws://192.168.137.95:8000");
 
-void sendTemp()
+void sendVal()
 {
-  String message = "send;livetemp;";
-  float in_min = 0; float in_max = 4096; float out_min = 0; float out_max = 3.3;
-  int x = analogRead(tempsensor);
-  float voltage = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-  temperatur = (voltage - 0.5) * 100.0 + 10;
-  message += String(temperatur);
+  String message = "send;potVal;";
+  int potVal = analogRead(potpin);
+  message += String(potVal);
   connection.send(message);
   Serial.println(message);
 }
@@ -31,14 +27,16 @@ void setup() {
   Serial.println("Connected to WiFi");
   
   connection.connectServer();
+  delay(50);
+  connection.send("lagre;potVal;STOP");
 }
 
 void loop()
 {
   static int previousMillis = millis();
-  connection.update();
   if (millis() - previousMillis > interval) {
-    sendTemp();
+    sendVal();
     previousMillis = millis();
+    connection.update();
   }
 }

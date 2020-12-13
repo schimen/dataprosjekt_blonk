@@ -1,13 +1,13 @@
 #include "Arduino.h"
-#include "SocketPong.h"
+#include "Arduino-idIOT.h"
 #include <ArduinoWebsockets.h>
 #include <WiFi.h>
 
-SocketPong::SocketPong(String server) {
+idIOT::idIOT(String server) {
   websocketServer_ = server;
 }
 
-bool SocketPong::connectWiFi(const char* ssid, const char* password, int pause) {
+bool idIOT::connectWiFi(const char* ssid, const char* password, int pause) {
   WiFi.begin(ssid, password);
   for (int i = 0; i < 15 && WiFi.status() != WL_CONNECTED; i++) {
     delay(pause);
@@ -20,16 +20,16 @@ bool SocketPong::connectWiFi(const char* ssid, const char* password, int pause) 
   }
 }
 
-void SocketPong::onMessageCallback(WebsocketsMessage message) {
+void idIOT::onMessageCallback(WebsocketsMessage message) {
   String msg = message.data();
   messageHandler(msg);
 }
 
-void SocketPong::onMsg() {
+void idIOT::onMsg() {
   client.onMessage(onMessageCallback);
 }
 
-void SocketPong::onEventsCallback(WebsocketsEvent event, String data) {
+void idIOT::onEventsCallback(WebsocketsEvent event, String data) {
   if (event == WebsocketsEvent::ConnectionOpened) {
       eventHandler("ConnectionOpened", data);
   }
@@ -41,25 +41,25 @@ void SocketPong::onEventsCallback(WebsocketsEvent event, String data) {
   }
 }
 
-void SocketPong::onEvnt() {
+void idIOT::onEvnt() {
   client.onEvent(onEventsCallback);
 }
 
-void SocketPong::connectServer() {
+void idIOT::connectServer() {
   client.connect(websocketServer_);
 }
 
-void SocketPong::send(String sendData) {
+void idIOT::send(String sendData) {
   client.send(sendData);
 }
 
-void SocketPong::sendSerial() {
+void idIOT::sendSerial() {
   String serialData;
   serialData = Serial.readString();
   client.send(serialData);
 }
 
-void SocketPong::update() {
+void idIOT::update() {
   client.poll();
   if (!client.available()) {
     Serial.println("Disconnected from server retrying.");
