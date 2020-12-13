@@ -37,8 +37,8 @@
 	* ~~metode egen protokoll~~
 
 * Simen
-	* innledning server og database
-	* bakgrunn serverside
+	* ~~innledning server og database~~
+	* ~~bakgrunn serverside~~
 	* metode server
-	* innledning blink
-	* metode blink
+	* ~~innledning blink~~
+	* ~~metode blink~~
