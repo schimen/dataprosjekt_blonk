@@ -26,8 +26,8 @@
 	* metode pong
 
 * Ken:
-	* bakgrunn: GUI
-	* innledning GUI
+	* ~~bakgrunn: GUI~~
+	* ~~innledning GUI~~
 	* metode GUI
 
 * Sindre:
