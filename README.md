@@ -35,9 +35,9 @@ IOT is the F U T U R E
 	* metode mikrokontroller
 
 * Rokas: 
-	* innledning klient mikrokontroller
-	* innledning pong
-	* metode pong
+	* ~~innledning klient mikrokontroller~~
+	* ~~innledning pong~~
+	* ~~metode pong~~
 
 * Ken:
 	* ~~bakgrunn: GUI~~
