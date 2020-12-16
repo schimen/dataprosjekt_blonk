@@ -1,41 +1,42 @@
-#include <SocketPong.h>
+#include <Arduino-idIOT.h>
 
-const char* ssid = "Get-2G-D61211"; //Enter SSID
-const char* password = "YYEJ47GN8U"; //Enter Password
+const char* ssid = "PongGang"; //Enter SSID
+const char* password = "Pong1234"; //Enter Password
 
-const int interval = 5000;
+const int interval = 1000;
 const int tempsensor = 34;
 int temperatur;
 
-SocketPong socketPong("ws://192.168.0.109:8000");
+idIOT connection("ws://192.168.137.95:8000");
 
 void sendTemp()
 {
-  String message = "send;temp;";
-  float in_min = 0; float in_max = 4096; float out_min = -40; float out_max = 125;
+  String message = "send;livetemp;";
+  float in_min = 0; float in_max = 4096; float out_min = 0; float out_max = 3.3;
   int x = analogRead(tempsensor);
-  temperatur = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  float voltage = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  temperatur = (voltage - 0.5) * 100.0 + 10;
   message += String(temperatur);
-  socketPong.send(message);
+  connection.send(message);
   Serial.println(message);
 }
 
 void setup() {
   Serial.begin(115200);
     
-  while (!socketPong.connectWiFi(ssid, password)) {
+  while (!connection.connectWiFi(ssid, password)) {
     Serial.println("WiFi connection failed, retrying...");
     delay(1000);
   }
   Serial.println("Connected to WiFi");
   
-  socketPong.connectServer();
+  connection.connectServer();
 }
 
 void loop()
 {
   static int previousMillis = millis();
-  socketPong.update();
+  connection.update();
   if (millis() - previousMillis > interval) {
     sendTemp();
     previousMillis = millis();

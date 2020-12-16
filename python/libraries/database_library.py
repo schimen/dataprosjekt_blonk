@@ -2,6 +2,8 @@
 kontroll av database i prosjekt i IELET2001.
 scriptet inneholder funksjoner for å kontrollere en mongodb database, hostet
 av mongodb
+
+Author: Simen Løcka Eine
 """
 
 from datetime import datetime
@@ -9,9 +11,10 @@ import motor.motor_asyncio
 from pymongo import MongoClient
 
 #global uri for database:
-PASSWORD = 'blonk-admin'
-DBNAME = 'blonkdb'
-URI = f'mongodb+srv://blonkserver:{PASSWORD}@cluster0.etj0n.mongodb.net/{DBNAME}?retryWrites=true&w=majority'
+DBNAME = 'idIOT-db'
+USERNAME = 'idIOT-klient'
+PASSWORD = 'idIOT-klient'
+URI = f'mongodb+srv://{USERNAME}:{PASSWORD}@cluster0.etj0n.mongodb.net/{DBNAME}?retryWrites=true&w=majority'
 
 class Database:
     """
@@ -108,7 +111,7 @@ class Database:
 def get_messages_sync(query={}, max_length=100):
     #connect to database:
     client = MongoClient(URI)
-    db = client.test
+    db = client.socketPong
     collection = db.messages
     cursor = collection.find(query).sort('time', -1).limit(max_length)
     for document in cursor:

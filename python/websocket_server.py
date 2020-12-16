@@ -1,7 +1,7 @@
 """
 server script for dataprosjekt i IELET2001.
 kjør server på raspbery pi og koble på med websockets.
-se https://github.com/schimen/dataprosjekt_blonk for mer info
+se https://github.com/schimen/idIOT for mer info
 
 Author: Simen Løcka Eine
 """

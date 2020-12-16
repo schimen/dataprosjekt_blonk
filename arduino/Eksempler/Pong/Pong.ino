@@ -1,10 +1,10 @@
 #include <Arduino.h>
-#include <SocketPong.h>
+#include <Arduino-idIOT.h>
 #include <TFT_eSPI.h>
 #include <SPI.h>
 
-const char* ssid = "yoschimin"; //Enter SSID
-const char* password = "simensimen123"; //Enter Password
+const char* ssid = "PongGang"; //Enter SSID
+const char* password = "Pong1234"; //Enter Password
 String player;
 
 int buttonPin = 22;
@@ -78,7 +78,7 @@ bool scoreswitch = true;
 
 unsigned long previousMillis = 0;
 
-void SocketPong::messageHandler(String message) {
+void idIOT::messageHandler(String message) {
   if (message.substring(0, 8) == "melding;") {
     if (message.substring(8, 19) == "player1Pot;") {
       value1 = message.substring(19).toInt();
@@ -90,9 +90,9 @@ void SocketPong::messageHandler(String message) {
   }
 }
 
-void SocketPong::eventHandler(String event, String data){};
+void idIOT::eventHandler(String event, String data){};
 
-SocketPong socketPong("ws://192.168.43.76:8000");
+idIOT connection("ws://192.168.137.95:8000");
 TFT_eSPI tft = TFT_eSPI();
 
 void score() {
@@ -269,8 +269,8 @@ String playerCheck() {
     potValue = analogRead(potPin);
     if (potValue == 0) {
       if (!digitalRead(buttonPin)) {  //hvis det er skjermen som starter
-        socketPong.send("lytt;player1Pot;START");
-        socketPong.send("lytt;player2Pot;START");
+        connection.send("lytt;player1Pot;START");
+        connection.send("lytt;player2Pot;START");
         return "screen";
       }
     }
@@ -279,7 +279,7 @@ String playerCheck() {
       while (potValue <= 1000 && potValue != 0) {
         potValue = analogRead(potPin);
         if (millis() - previousMillis >= 5000) {
-          socketPong.send("lagre;player1Pot;STOP");
+          connection.send("lagre;player1Pot;STOP");
           return "player1Pot";
         }
       }
@@ -289,7 +289,7 @@ String playerCheck() {
       while (potValue >= 3900) {
         potValue = analogRead(potPin);
         if (millis() - previousMillis >= 5000) {
-          socketPong.send("lagre;player2Pot;STOP");
+          connection.send("lagre;player2Pot;STOP");
           return "player2Pot";
         }
       }
@@ -304,7 +304,7 @@ void spillPong(String ply) {
       msgValue +=  ply;
       msgValue +=  ";";
       msgValue += String(potValue_);
-      socketPong.send(msgValue);
+      connection.send(msgValue);
     }
   }
   else if (ply == "screen") {
@@ -345,17 +345,17 @@ void screenReset()  {
 void setup() {
   Serial.begin(115200);
   // Connect to wifi
-  while (!socketPong.connectWiFi(ssid, password)) {
+  while (!connection.connectWiFi(ssid, password)) {
     Serial.println("WiFi connection failed, retrying...");
     delay(1000);
   }
   Serial.println("Connected to WiFi");
   // Setup Callbacks
-  socketPong.onMsg();
-  socketPong.onEvnt();
+  connection.onMsg();
+  connection.onEvnt();
 
   // Connect to server
-  socketPong.connectServer();
+  connection.connectServer();
   player = playerCheck();
   Serial.println(player);
   if(player == "screen"){
@@ -364,6 +364,6 @@ void setup() {
 }
 
 void loop() {
-  socketPong.update();
+  connection.update();
   spillPong(player);
 }

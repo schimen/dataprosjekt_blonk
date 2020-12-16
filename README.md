@@ -1,4 +1,18 @@
-# dataprosjekt_blonk
+# idIOT
+
+IOT is the F U T U R E
+![](Dokumentasjon/Bilder/idIOT-logo.png)
+
+## Gruppe 23 dataprosjekt IELET2001 høst 2020
+* Gruppemedlemmer:
+	* Rokas the gamer
+	* Ken the dog
+	* Schimen the hacker
+	* Sindre the memestar
+	* Bjørnar the wise
+
+
+
 
 ## Todo:
 * ~~Pong eksempel~~: 
@@ -26,8 +40,8 @@
 	* ~~metode pong~~
 
 * Ken:
-	* bakgrunn: GUI
-	* innledning GUI
+	* ~~bakgrunn: GUI~~
+	* ~~innledning GUI~~
 	* metode GUI
 
 * Sindre:
@@ -37,8 +51,8 @@
 	* ~~metode egen protokoll~~
 
 * Simen
-	* innledning server og database
-	* bakgrunn serverside
+	* ~~innledning server og database~~
+	* ~~bakgrunn serverside~~
 	* metode server
-	* innledning blink
-	* metode blink
+	* ~~innledning blink~~
+	* ~~metode blink~~

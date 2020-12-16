@@ -1,3 +1,16 @@
+"""
+Bibliotek for kontrollpanel.
+Biblioteket bruker tkinter til å lage GUI, men asyncio
+for å gjøre gui asynkront.
+Biblioteket bruker også matplotlib for live plotting.
+Skrevet for prosjektet til gruppe 23 i IELeT2001.
+For informasjon i bruk, se eksempler eller se på
+github:
+https://github.com/schimen/idIOT
+
+Author: Simen Løcka Eine
+"""
+
 import asyncio
 import tkinter as tk
 from matplotlib import pyplot as plt
