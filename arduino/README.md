@@ -1,9 +1,9 @@
 # ESP32 websocket klient
-##Forutsetninger
+## Forutsetninger
 * Arduino IDE
 * ESP32 (Eventuelt annet kompatibelt mikrokontroller med WiFi)
 
-##Installasjon
+## Installasjon
 1. Last ned mappene fra **Bibliotek**.
 2. Lagre mappene i C:\Brukere\"Din Bruker"\Dokumenter\Arduino\libraries
 3. Laste ned en eller flere mapper fra **Eksempler**.
