@@ -1,4 +1,4 @@
-# Instruks for å kjøre idIOT server:  
+# Instruks for å kjøre idIOT server:
 
 1.
 Installer nødvendige python biblioteker i din interpreter:  
