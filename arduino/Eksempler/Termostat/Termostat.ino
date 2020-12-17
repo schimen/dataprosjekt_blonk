@@ -13,11 +13,15 @@ void sendTemp()
 {
   String message = "send;livetemp;";
   float in_min = 0; float in_max = 4096; float out_min = 0; float out_max = 3.3;
-  int x = analogRead(tempsensor);
+  int x = analogRead(tempsensor); 
+  //For max spenning er 3.3 volt må vi dele (1024*4) = 4096.   
   float voltage = (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-  temperatur = (voltage - 0.5) * 100.0 + 10;
-  message += String(temperatur);
-  connection.send(message);
+  //Sensoren leser av temperaturen under 0 grader
+  //derfor legge til 10. I tillegg trekke fra 0.5 til spenningen og multiplisere med 100, for å få 
+  //riktig temperatur i celsius. 
+  temperatur = (voltage - 0.5) * 100.0 + 10; 
+  message += String(temperatur);                 
+  connection.send(message);                  
   Serial.println(message);
 }
 
@@ -39,6 +43,7 @@ void loop()
   connection.update();
   if (millis() - previousMillis > interval) {
     sendTemp();
+    //Leser av temperaturen hver sekund.
     previousMillis = millis();
   }
 }
