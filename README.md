@@ -35,7 +35,7 @@ python\
 |--eksempel_enkel_kontrollpanel.py\
 |--klient_kontrollpanel.py\
 |--wireshark_capture_script.py\
-|--README.md\
+|--README.md
 
 Nødvendige biblioteker er:
 * python:
