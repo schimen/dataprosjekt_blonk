@@ -7,13 +7,14 @@ const char* ssid = "PongGang"; //Enter SSID
 const char* password = "Pong1234"; //Enter Password
 String player;
 
-int buttonPin = 22;
-int potPin = 34;
+int buttonPin = 22; //Button pin
+int potPin = 34; //Potmeter pin
 
-//Potmeter 1-2 values
+//Client value
 int value1 = 0;
 int value2 = 0;
 
+//Potmeter value
 int potValue_ = 0;
 
 #define BLACK 0x0000
@@ -76,8 +77,10 @@ String rscoretext;
 
 bool scoreswitch = true;
 
+//Timing variable
 unsigned long previousMillis = 0;
 
+//Function to extract integer from server message
 void idIOT::messageHandler(String message) {
   if (message.substring(0, 8) == "melding;") {
     if (message.substring(8, 19) == "player1Pot;") {
@@ -92,8 +95,9 @@ void idIOT::messageHandler(String message) {
 
 void idIOT::eventHandler(String event, String data){};
 
-idIOT connection("ws://192.168.137.95:8000");
-TFT_eSPI tft = TFT_eSPI();
+
+idIOT connection("ws://192.168.137.95:8000"); //Enter Server address
+TFT_eSPI tft = TFT_eSPI(); //Screen library
 
 void score() {
   //stops ball from spamming score if out of bounds
@@ -216,6 +220,8 @@ void rpaddle(int stringPotValue2) {
   }
 }
 
+
+//Function to randomize ball direction in x
 int random_direction_x() {
   int random_direction_variable = random(-1, 1);
   if (random_direction_variable >= 0)  {
@@ -227,6 +233,7 @@ int random_direction_x() {
   return random_direction_variable;
 }
 
+//Function to randomize ball direction in y
 int random_direction_y() {
   return random(-2, 2);
 }
@@ -260,13 +267,14 @@ bool increaseCheck() {
   }
 }
 
+//Function to check what player (screen, potmeter1 or potmeter2) is on the ESP32
 String playerCheck() {
   static int potValue;
-  potValue = analogRead(potPin);
+  potValue = analogRead(potPin); 
   pinMode(buttonPin, INPUT);
   delay(500);
   while (true) {
-    potValue = analogRead(potPin);
+    potValue = analogRead(potPin); //If pot value equals 0 and if button pressed assign screen
     if (potValue == 0) {
       if (!digitalRead(buttonPin)) {  //hvis det er skjermen som starter
         connection.send("lytt;player1Pot;START");
@@ -274,7 +282,7 @@ String playerCheck() {
         return "screen";
       }
     }
-    else if (potValue <= 1000 && potValue != 0) { //hvis det er spiller 1 som starter
+    else if (potValue <= 1000 && potValue != 0) { //Assign player1 if requirement is met
       previousMillis = millis();
       while (potValue <= 1000 && potValue != 0) {
         potValue = analogRead(potPin);
@@ -284,7 +292,7 @@ String playerCheck() {
         }
       }
     }
-    else if (potValue >= 3900) {  //hvis det er spiller 2 som starter
+    else if (potValue >= 3900) {  //Assign player2 if requirement is met
       previousMillis = millis();
       while (potValue >= 3900) {
         potValue = analogRead(potPin);
@@ -297,8 +305,9 @@ String playerCheck() {
   }
 }
 
+//Function for the game
 void spillPong(String ply) {
-  if (ply == "player1Pot" || ply == "player2Pot") {
+  if (ply == "player1Pot" || ply == "player2Pot") { //If potmeter is player
     if (increaseCheck()) {
       String msgValue = "send;";
       msgValue +=  ply;
@@ -308,7 +317,7 @@ void spillPong(String ply) {
     }
   }
   else if (ply == "screen") {
-    if (!digitalRead(buttonPin)) {  //hvis det er skjermen som starter
+    if (!digitalRead(buttonPin)) {  //If screen is player
         lscore = 0;
         rscore = 0;
         initGame();
