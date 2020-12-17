@@ -2,6 +2,8 @@
 bibliotek for websocket klient i prosjekt i faget IELET2001
 klienten kobler seg på vår egen skrevet server og bruker denne vår egen
 protokoll for kommandoer
+
+Author: Simen Løcka Eine
 """
 
 import asyncio
