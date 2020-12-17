@@ -1,11 +1,11 @@
 # Instruks for å kjøre idIOT server:
 
 1. Installer nødvendige python biblioteker i din interpreter:  
-	-Motor  
-	-Asyncio  
-	-Pymongo  
-	-Websockets  
-	-Matplotlib  
+	- Motor  
+	- Asyncio  
+	- Pymongo  
+	- Websockets  
+	- Matplotlib  
 2. Kjør server programmet.("websocket_server.py")
 
 3. Bruk oppgitt server og port i program-vinduet for å koble 
