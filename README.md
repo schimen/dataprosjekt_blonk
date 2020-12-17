@@ -8,34 +8,34 @@ Se readme i de python og arduino mappe for installasjons-veiledning. Her er over
 arduino\
 |--Bibliotek\
 |  |--Arduino-idIOT\
-|  |  |--Arduino-idIOT.h
-|  |  |--Arduino-idIOT.cpp
-|  |--ArduinoWebsockets (eksternt bibliotek)
-|--Eksempler/
-|  |--LED/
-|  |  |--LED.ino
-|  |--Pong/
-|  |  |--Pong.ino
-|  |  |--TFT-eSPI (eksternt bibliotek)
-|  |--Termostat/
-|  |  |--Termostat.ino
-|  |--live_plot_test/
-|     |--live_plot_test.ino
-|--README.md
-
-python/
-|--libraries/
-|  |--client_library.py
-|  |--database_library.py
-|  |--gui_library.py
-|--websocket_server.py
-|--eksempel_LED.py
-|--eksempel_termostat.py
-|--eksempel_live_plot.py
-|--eksempel_enkel_kontrollpanel.py
-|--klient_kontrollpanel.py
-|--wireshark_capture_script.py
-|--README.md
+|  |  |--Arduino-idIOT.h\
+|  |  |--Arduino-idIOT.cpp\
+|  |--ArduinoWebsockets (eksternt bibliotek)\
+|--Eksempler\
+|  |--LED\
+|  |  |--LED.ino\
+|  |--Pong\
+|  |  |--Pong.ino\
+|  |  |--TFT-eSPI (eksternt bibliotek)\
+|  |--Termostat\
+|  |  |--Termostat.ino\
+|  |--live_plot_test\
+|     |--live_plot_test.ino\
+|--README.md\
+\
+python\
+|--libraries\
+|  |--client_library.py\
+|  |--database_library.py\
+|  |--gui_library.py\
+|--websocket_server.py\
+|--eksempel_LED.py\
+|--eksempel_termostat.py\
+|--eksempel_live_plot.py\
+|--eksempel_enkel_kontrollpanel.py\
+|--klient_kontrollpanel.py\
+|--wireshark_capture_script.py\
+|--README.md\
 
 Nødvendige biblioteker er:
 * python:
