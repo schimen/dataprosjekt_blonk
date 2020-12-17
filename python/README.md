@@ -1,4 +1,4 @@
-#Instruks for å kjøre idIOT server:
+# Instruks for å kjøre idIOT server:
 
 1.
 Installer nødvendige python biblioteker i din interpreter:
@@ -15,7 +15,7 @@ til klienten din.
 Dersom du kjører serveren skjult trenger du IP-adressen 
 til enheten som kjører serveren. Porten er 8000.
 
-#Bruk av eksempel programvare:
+# Bruk av eksempel programvare:
 
 Ved kjøring av eksempel programvare vil du bli spurt 
 om "host" og "port", her oppgir du IP adressen og porten som 
