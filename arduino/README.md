@@ -8,4 +8,5 @@
 2. Lagre mappene i C:\Brukere\"Din Bruker"\Dokumenter\Arduino\libraries
 3. Laste ned en eller flere mapper fra **Eksempler**.
 4. Kjør .ino fil inni valgt eksempelmappe gjennom Arduino IDE.
-5. Last opp til mikrokontroller.
+5. Endre ssid, password og serveradresse til egen informasjon.
+6. Last opp til mikrokontroller.
