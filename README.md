@@ -1,7 +1,7 @@
 # idIOT
 
 IOT is the F U T U R E
-![](Dokumentasjon/Bilder/idIOT-logo.png)
+![](Dokumentasjon/Bilder/idIOT-logo-transparent.png)
 
 ## Gruppe 23 dataprosjekt IELET2001 høst 2020
 * Gruppemedlemmer:

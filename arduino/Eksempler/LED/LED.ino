@@ -1,7 +1,7 @@
 #include <Arduino-idIOT.h>
 
-const char* ssid = "PongGang"; //Enter SSID
-const char* password = "Pong1234"; //Enter Password
+const char* ssid = "BjornarNett"; //Enter SSID
+const char* password = "Hello123"; //Enter Password
 
 const int ledpin = 2;
 bool ledOn = false;
