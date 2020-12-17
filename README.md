@@ -5,9 +5,9 @@ Vi har laget en IoT platform basert på en raspberry pi server, esp32 klienter o
 
 Se readme i de python og arduino mappe for installasjons-veiledning. Her er oversikt over mappene:
 
-arduino/
-|--Bibliotek/
-|  |--Arduino-idIOT/
+arduino\
+|--Bibliotek\
+|  |--Arduino-idIOT\
 |  |  |--Arduino-idIOT.h
 |  |  \--Arduino-idIOT.cpp
 |  \--ArduinoWebsockets (eksternt bibliotek)
