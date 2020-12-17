@@ -61,7 +61,7 @@ void idIOT::sendSerial() {// Her skriver man ord som blir sendt fra klienten
 
 void idIOT::update() {    //I denne koden vil se om det er mer data som skal leses.
   client.poll();          
-  if (!client.available()) {  //Hvis det ikke er mer byte
+  if (!client.available()) {  //Hvis det ikke er mer bytes
     Serial.println("Disconnected from server retrying.");
     client.connect(websocketServer_);
   }
