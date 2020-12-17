@@ -8,7 +8,7 @@ Installer nødvendige python biblioteker i din interpreter:
 	-Websockets  
 	-Matplotlib  
 2.  
-Kjør server programmet.  
+Kjør server programmet.("websocket_server.py")
 3.  
 Bruk oppgitt server og port i program-vinduet for å koble 
 til klienten din.  
@@ -24,6 +24,3 @@ serveren kjører på.
 
 # kontrollpanel og server
 
-
-raspberry pi hostname: blonkserver  
-raspberry pi passord: blonk-admin
